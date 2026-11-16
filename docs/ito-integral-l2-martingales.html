@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Construction of Itô's Integral with Respect to Continuous L2-Bounded Martingales | Stochastic Calculus Notes</title>
+<link rel="stylesheet" href="style.css?v=be02ea21">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      processEnvironments: true,
+      macros: {
+      mcal: ["\\mathcal{#1}", 1],
+      Prob: "\\mathbb{P}",
+      E: "\\mathbb{E}",
+      F: "\\mathcal{F}",
+      R: "\\mathbb{R}"
+      }
+    },
+    chtml: { displayAlign: 'center' },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'svg'] }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="index.html">Stochastic Calculus Notes</a>
+  <span class="site-subtitle">ACTSC 969, University of Waterloo</span>
+</header>
+
+<main>
+<h1>Chapter 4<br><span class="chapter-name">Construction of Itô's Integral with Respect to Continuous $L^2$-Bounded Martingales</span></h1>
+<p>Let \(S\le T\) be stopping times, and let \(Z\) be bounded and \(\mathcal F_S\)-measurable. Consider the elementary predictable process
+\[
+H_s=Z\mathbf 1_{(S,T]}(s).
+\]
+For a continuous, \(L^2\)-bounded martingale \(M\), define
+\[
+\int_0^t H_s\,dM_s
+=
+Z\bigl(M_{t\wedge T}-M_{t\wedge S}\bigr).
+\]
+This stochastic integral is also denoted by
+\[
+(H\cdot M)_t.
+\]</p>
+<div class="thm thm-proposition" id="proposition-4-1">
+<div class="thm-head"><a class="thm-name" href="#proposition-4-1">Proposition 4.1</a>.</div>
+<p>The process
+\[
+(H\cdot M)_t
+=
+Z\bigl(M_{t\wedge T}-M_{t\wedge S}\bigr)
+\]
+is an adapted, \(L^2\)-bounded martingale.</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Adaptedness follows from the measurability of \(Z\) with respect to \(\mathcal F_S\) and the fact that \(S\le t\wedge S\le t\), \(T\le t\wedge T\le t\).</p>
+<p>For \(L^2\)-boundedness,
+\[
+\|(H\cdot M)_t\|_2
+\le
+\|Z\|_\infty
+\left(
+\|M_{t\wedge T}\|_2+\|M_{t\wedge S}\|_2
+\right).
+\]
+By optional sampling,
+\[
+M_{t\wedge T}
+=
+\mathbb E[M_t\mid\mathcal F_{t\wedge T}],
+\]
+and hence conditional expectation is an \(L^2\)-contraction:
+\[
+\|M_{t\wedge T}\|_2\le\|M_t\|_2.
+\]
+The same argument applies to \(M_{t\wedge S}\). Since \(M\) is \(L^2\)-bounded, so is \(H\cdot M\).</p>
+<p>Finally, the martingale property follows from optional sampling and the \(\mathcal F_S\)-measurability of \(Z\).</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<nav class="pager"><span><a href="stochastic-integrals.html">&larr; 3. Stochastic Integrals with Respect to Brownian Motion</a></span><span></span></nav>
+</main>
+</body>
+</html>

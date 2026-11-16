@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stochastic Integrals with Respect to Brownian Motion | Stochastic Calculus Notes</title>
+<link rel="stylesheet" href="style.css?v=be02ea21">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      processEnvironments: true,
+      macros: {
+      mcal: ["\\mathcal{#1}", 1],
+      Prob: "\\mathbb{P}",
+      E: "\\mathbb{E}",
+      F: "\\mathcal{F}",
+      R: "\\mathbb{R}"
+      }
+    },
+    chtml: { displayAlign: 'center' },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'svg'] }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="index.html">Stochastic Calculus Notes</a>
+  <span class="site-subtitle">ACTSC 969, University of Waterloo</span>
+</header>
+<nav class="toc" aria-label="On this page">
+<span class="toc-title">3. Stochastic Integrals with Respect to Brownian Motion</span>
+<div class="toc-links"><a href="#lecture-10">Lecture 10</a>
+<a href="#lecture-11">Lecture 11</a>
+<a href="#lecture-12">Lecture 12</a>
+<a href="#lecture-13">Lecture 13</a>
+<a href="#lecture-14">Lecture 14</a>
+<a href="#lecture-15-quadratic-variation-and-local-martingales">Lecture 15: Quadratic Variation and Local Martingales</a>
+<a href="#lecture-16-class-dl-quadratic-covariation-and-elementary-ito-integrals">Lecture 16: Class $DL$, Quadratic Covariation, and Elementary Itô Integrals</a></div>
+</nav>
+<main>
+<h1>Chapter 3<br><span class="chapter-name">Stochastic Integrals with Respect to Brownian Motion</span></h1>
+<h2 id="lecture-10"><a class="anchor" href="#lecture-10">Lecture 10</a></h2>
+<p>Our goal is to define the stochastic integral
+\[
+  \int_a^b f_t\,dB_t,
+\]
+where the integrand may depend on both time and the outcome $\omega$.
+Because Brownian motion has paths of unbounded variation, this cannot in
+general be defined as an ordinary Lebesgue&ndash;Stieltjes integral. Instead, we
+first define the integral for suitably simple adapted processes and then
+extend the definition by an $L^2$ limit.</p>
+<div class="thm thm-definition" id="definition-3-1">
+<div class="thm-head"><a class="thm-name" href="#definition-3-1">Definition 3.1</a>.</div>
+<p>Let $I=[a,b]$. Write $V(I)$ for the class of processes
+$f:I\times\Omega\to\mathbb{R}$ such that:</p>
+<ol>
+<li>$f$ is $\mathcal{B}(I)\otimes\mathcal{F}$-measurable;</li>
+<li>$f$ is adapted, i.e., $f_t$ is $\mathcal{F}_t$-measurable for every
+  $t\in I$;</li>
+<li>\[
+    \mathbb{E}\left[\int_a^b f_t^2\,dt\right]&lt;\infty.
+  \]</li>
+</ol>
+</div>
+<div class="thm thm-definition" id="definition-3-2">
+<div class="thm-head"><a class="thm-name" href="#definition-3-2">Definition 3.2</a> <span class="thm-title">(Elementary process)</span>.</div>
+<p>A process $\varphi\in V(I)$ is <em>elementary</em> if, for a partition
+\[
+  a=t_0&lt;t_1&lt;\cdots&lt;t_n=b,
+\]
+it has the form
+\[
+  \varphi_t=\sum_{j=0}^{n-1}A_j\mathbf{1}_{[t_j,t_{j+1})}(t),
+\]
+where $A_j$ is $\mathcal{F}_{t_j}$-measurable. Define
+\[
+  \int_a^b\varphi_t\,dB_t
+  :=\sum_{j=0}^{n-1}A_j\bigl(B_{t_{j+1}}-B_{t_j}\bigr).
+\]
+The condition $A_j\in\mathcal{F}_{t_j}$ expresses that the value used on
+the interval $[t_j,t_{j+1})$ must be chosen before its Brownian increment is
+observed.</p>
+</div>
+<h3 id="approximation-by-elementary-processes"><a class="anchor" href="#approximation-by-elementary-processes">Approximation by elementary processes</a></h3>
+<p>The following three lemmas show that elementary processes are dense in $V(I)$
+under the norm
+\[
+  \|f\|_{L^2(\mathbb{P}\times dt)}
+  :=\left(\mathbb{E}\left[\int_a^b f_t^2\,dt\right]\right)^{1/2}.
+\]</p>
+<div class="thm thm-lemma" id="lemma-3-3">
+<div class="thm-head"><a class="thm-name" href="#lemma-3-3">Lemma 3.3</a>.</div>
+<p>Let $g\in V(I)$ be bounded and have continuous sample paths. Then there are
+elementary processes $(\varphi_n)$ such that
+\[
+  \mathbb{E}\left[\int_a^b\bigl(g_t-\varphi_n(t)\bigr)^2\,dt\right]
+  \longrightarrow0.
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>For each $n$, choose a partition
+\[
+  a=t^{(n)}_0&lt;t^{(n)}_1&lt;\cdots&lt;t^{(n)}_{N_n}=b
+\]
+whose mesh tends to zero, and set
+\[
+  \varphi_n(t)
+  :=\sum_{j=0}^{N_n-1}g_{t_j^{(n)}}
+  \mathbf{1}_{[t_j^{(n)},t_{j+1}^{(n)})}(t).
+\]
+Since $g$ is adapted, $g_{t_j^{(n)}}$ is
+$\mathcal{F}_{t_j^{(n)}}$-measurable, so $\varphi_n$ is elementary. For each
+fixed $\omega$, uniform continuity of $t\mapsto g_t(\omega)$ on $[a,b]$
+implies
+\[
+  \int_a^b\bigl(g_t(\omega)-\varphi_n(t,\omega)\bigr)^2\,dt\to0.
+\]
+If $|g|\le C$, the integrands are bounded by $4C^2$. Dominated convergence
+on $\Omega\times[a,b]$ proves the result.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<div class="thm thm-lemma" id="lemma-3-4">
+<div class="thm-head"><a class="thm-name" href="#lemma-3-4">Lemma 3.4</a>.</div>
+<p>Let $h\in V(I)$ be bounded. Then there are bounded, adapted processes
+$(g_n)$ with continuous sample paths such that
+\[
+  \mathbb{E}\left[\int_a^b\bigl(h_t-g_n(t)\bigr)^2\,dt\right]
+  \longrightarrow0.
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Extend $h$ by zero to times before $a$ and define the backward averages
+\[
+  g_n(t):=n\int_{(t-1/n)\vee a}^{t}h_s\,ds,
+  \qquad a\le t\le b.
+\]
+Each $g_n(t)$ is $\mathcal{F}_t$-measurable, because it only uses values
+$h_s$ with $s\le t$. Moreover, $g_n$ has continuous sample paths and is
+bounded whenever $h$ is bounded. Translation continuity in
+$L^2(\mathbb{P}\times dt)$ (equivalently, the standard convergence theorem
+for one-sided moving averages) gives
+\[
+  g_n\longrightarrow h\quad\text{in }L^2(\mathbb{P}\times dt).
+\]
+This is precisely the desired assertion.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<div class="thm thm-lemma" id="lemma-3-5">
+<div class="thm-head"><a class="thm-name" href="#lemma-3-5">Lemma 3.5</a>.</div>
+<p>Let $f\in V(I)$. Then there are bounded processes $(h_n)\subset V(I)$ such
+that
+\[
+  \mathbb{E}\left[\int_a^b\bigl(f_t-h_n(t)\bigr)^2\,dt\right]
+  \longrightarrow0.
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Let
+\[
+  h_n(t):=(-n)\vee f_t\wedge n.
+\]
+The process $h_n$ remains jointly measurable and adapted, and it is bounded.
+Also, $h_n(t)\to f_t$ pointwise and
+\[
+  |f_t-h_n(t)|^2\le f_t^2.
+\]
+The conclusion follows from dominated convergence, since
+$f\in V(I)$.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<p>Combining the three lemmas, first truncate $f$, then smooth the bounded
+truncation, and finally approximate the resulting process by elementary
+processes. Hence every $f\in V(I)$ can be approximated in
+$L^2(\mathbb{P}\times dt)$ by elementary processes.</p>
+<h3 id="ito-s-isometry-for-elementary-processes"><a class="anchor" href="#ito-s-isometry-for-elementary-processes">Itô's isometry for elementary processes</a></h3>
+<div class="thm thm-lemma" id="lemma-3-6">
+<div class="thm-head"><a class="thm-name" href="#lemma-3-6">Lemma 3.6</a> <span class="thm-title">(Itô's isometry)</span>.</div>
+<p>Let
+\[
+  \varphi_t=\sum_{j=0}^{n-1}A_j\mathbf{1}_{[t_j,t_{j+1})}(t)
+\]
+be elementary. Then
+\[
+  \mathbb{E}\left[\left(\int_a^b\varphi_t\,dB_t\right)^2\right]
+  =\mathbb{E}\left[\int_a^b\varphi_t^2\,dt\right].
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Write $\Delta B_j=B_{t_{j+1}}-B_{t_j}$. Expanding the square gives
+\[
+ \mathbb{E}\left[\left(\sum_{j=0}^{n-1}A_j\Delta B_j\right)^2\right]
+ =\sum_{j=0}^{n-1}\mathbb{E}[A_j^2(\Delta B_j)^2]
+ +2\sum_{0\le j&lt;k\le n-1}\mathbb{E}[A_j\Delta B_jA_k\Delta B_k].
+\]
+For the diagonal terms, $A_j$ is $\mathcal{F}_{t_j}$-measurable and
+$\Delta B_j$ is independent of $\mathcal{F}_{t_j}$ with variance
+$t_{j+1}-t_j$. Thus
+\[
+ \mathbb{E}[A_j^2(\Delta B_j)^2]
+ =\mathbb{E}\left[A_j^2\,
+ \mathbb{E}\bigl[(\Delta B_j)^2\mid\mathcal{F}_{t_j}\bigr]\right]
+ =(t_{j+1}-t_j)\mathbb{E}[A_j^2].
+\]
+For $j&lt;k$, the random variable $A_j\Delta B_jA_k$ is
+$\mathcal{F}_{t_k}$-measurable, whereas $\Delta B_k$ is independent of
+$\mathcal{F}_{t_k}$ and has conditional mean zero. Therefore
+\[
+ \mathbb{E}[A_j\Delta B_jA_k\Delta B_k]
+ =\mathbb{E}\left[A_j\Delta B_jA_k\,
+ \mathbb{E}[\Delta B_k\mid\mathcal{F}_{t_k}]\right]=0.
+\]
+Consequently,
+\[
+ \mathbb{E}\left[\left(\int_a^b\varphi_t\,dB_t\right)^2\right]
+ =\sum_{j=0}^{n-1}(t_{j+1}-t_j)\mathbb{E}[A_j^2].
+\]
+Finally, since $\varphi_t=A_j$ on $[t_j,t_{j+1})$,
+\[
+ \mathbb{E}\left[\int_a^b\varphi_t^2\,dt\right]
+ =\sum_{j=0}^{n-1}(t_{j+1}-t_j)\mathbb{E}[A_j^2],
+\]
+which proves the identity.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<h2 id="lecture-11"><a class="anchor" href="#lecture-11">Lecture 11</a></h2>
+<p>Let $V(0,T)$ denote the class of adapted, jointly measurable processes $f$ such that
+\[
+  \E\!\left[\int_0^T f_s^2\,ds\right]&lt;\infty.
+\]
+If $(\varphi_n)$ is a sequence of elementary processes converging to $f$ in
+$L^2(\Prob\times \mcal{L})$, then Itô's isometry implies that
+\[
+  \left(\int_0^T\varphi_n(s)\,dB_s\right)_{n\ge1}
+\]
+is Cauchy in $L^2(\Prob)$. Completeness of $L^2(\Prob)$ therefore defines
+$\int_0^T f_s\,dB_s$. In particular, Itô's isometry extends from elementary
+processes to every $f\in V(0,T)$:
+\[
+  \E\!\left[\left(\int_0^T f_s\,dB_s\right)^2\right]
+  =\E\!\left[\int_0^T f_s^2\,ds\right].
+\]
+The stochastic integral is linear in its integrand.</p>
+<h3 id="doob-s-maximal-inequality"><a class="anchor" href="#doob-s-maximal-inequality">Doob's maximal inequality</a></h3>
+<div class="thm thm-proposition" id="proposition-3-7">
+<div class="thm-head"><a class="thm-name" href="#proposition-3-7">Proposition 3.7</a>.</div>
+<p>Let $(M_n)_{n=0}^N$ be a nonnegative submartingale. For $\lambda&gt;0$,
+\[
+  \lambda\,\Prob\!\left(\max_{0\le n\le N}M_n\ge\lambda\right)
+  \le \E\!\left[M_N\mathbf{1}_{\{\max_{0\le n\le N}M_n\ge\lambda\}}\right].
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Set $A=\{\max_{0\le n\le N}M_n\ge\lambda\}$ and let
+\[
+  \tau=\inf\{n\le N:M_n\ge\lambda\},
+\]
+with $\tau=N$ on $A^c$. By optional sampling for bounded stopping times,
+\[
+ \E[M_N\mid\mcal{F}_\tau]\ge M_\tau.
+\]
+Multiplying by $\mathbf{1}_A$ and taking expectations yields
+\[
+ \E[M_N\mathbf{1}_A]\ge\E[M_\tau\mathbf{1}_A]
+ \ge\lambda\Prob(A).
+\]</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<div class="thm thm-corollary" id="corollary-3-8">
+<div class="thm-head"><a class="thm-name" href="#corollary-3-8">Corollary 3.8</a>.</div>
+<p>Let $(M_n)_{n=0}^N$ be a martingale or a nonnegative submartingale. For
+$p\ge1$ and $\lambda&gt;0$,
+\[
+ \lambda^p\Prob\!\left(\max_{0\le n\le N}|M_n|\ge\lambda\right)
+ \le \E[|M_N|^p].
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>By conditional Jensen's inequality, $(|M_n|^p)$ is a nonnegative
+submartingale. Apply the proposition to this process.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<div class="thm thm-theorem" id="theorem-3-9">
+<div class="thm-head"><a class="thm-name" href="#theorem-3-9">Theorem 3.9</a> <span class="thm-title">(Doob's maximal inequality)</span>.</div>
+<p>Let $(M_t)_{0\le t\le T}$ be a continuous martingale. For $p\ge1$ and
+$\lambda&gt;0$,
+\[
+ \Prob\!\left(\sup_{0\le t\le T}|M_t|\ge\lambda\right)
+ \le \frac{\E[|M_T|^p]}{\lambda^p}.
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Apply the discrete-time inequality to the finite sets in an increasing
+sequence of finite subsets of a countable dense subset of $[0,T]$, including
+$T$. Pass to the limit using continuity of $M$ and then let the usual
+$\varepsilon$-approximation tend to zero.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<h3 id="continuity-and-martingale-property"><a class="anchor" href="#continuity-and-martingale-property">Continuity and martingale property</a></h3>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Choose elementary processes $\varphi_n$ with
+\[
+ \E\!\left[\int_0^T|f_s-\varphi_n(s)|^2\,ds\right]\longrightarrow0,
+ \qquad I_n(t):=\int_0^t\varphi_n(s)\,dB_s.
+\]
+Each $I_n$ is a continuous martingale. Hence, by Doob's inequality and
+Itô's isometry,
+\[
+ \Prob\!\left(\sup_{0\le t\le T}|I_n(t)-I_m(t)|&gt;\varepsilon\right)
+ \le\frac{1}{\varepsilon^2}\E\!\left[\int_0^T
+ |\varphi_n(s)-\varphi_m(s)|^2\,ds\right].
+\]
+Choose a subsequence $(I_{n_k})$ such that
+\[
+ \Prob\!\left(\sup_{0\le t\le T}|I_{n_{k+1}}(t)-I_{n_k}(t)|&gt;2^{-k}\right)&lt;2^{-k}.
+\]
+Set
+\[
+ E_k:=\left\{\sup_{0\le t\le T}|I_{n_{k+1}}(t)-I_{n_k}(t)|&gt;2^{-k}\right\}.
+\]
+Since $\sum_{k\ge1}\Prob(E_k)\le\sum_{k\ge1}2^{-k}&lt;\infty$, the
+Borel&ndash;Cantelli lemma implies that, almost surely, only finitely many of the
+events $E_k$ occur. Hence, for almost every $\omega$, there is an integer
+$K(\omega)$ such that, for every $k\ge K(\omega)$,
+\[
+ \sup_{0\le t\le T}|I_{n_{k+1}}(t,\omega)-I_{n_k}(t,\omega)|\le2^{-k}.
+\]
+For $m&gt;\ell\ge K(\omega)$, the triangle inequality now yields
+\[
+ \begin{aligned}
+ \sup_{0\le t\le T}|I_{n_m}(t,\omega)-I_{n_\ell}(t,\omega)|
+ &amp;\le\sum_{k=\ell}^{m-1}\sup_{0\le t\le T}
+ |I_{n_{k+1}}(t,\omega)-I_{n_k}(t,\omega)|\\
+ &amp;\le\sum_{k=\ell}^{m-1}2^{-k}.
+ \end{aligned}
+\]
+The final quantity tends to zero as $\ell\to\infty$. Thus, for almost every
+$\omega$, the continuous functions $I_{n_k}(\cdot,\omega)$ are Cauchy in
+the supremum norm on $[0,T]$. They therefore converge uniformly to a
+continuous function $I(\cdot,\omega)$. Define $I$ arbitrarily on the null
+set where this argument fails.</p>
+<p>For every fixed $t$, $I_{n_k}(t)\to I_t$ almost surely, while
+$I_{n_k}(t)\to M_t$ in $L^2$, hence in probability. Uniqueness of limits in
+probability gives $I_t=M_t$ almost surely. Thus $I$ is a continuous version
+of $M$.</p>
+<p>For $s\le t$, conditional expectation is continuous in $L^2$, and therefore
+\[
+ \E[M_t\mid\F_s]
+ =\lim_{k\to\infty}\E[I_{n_k}(t)\mid\F_s]
+ =\lim_{k\to\infty}I_{n_k}(s)=M_s.
+\]
+Finally, apply Doob's inequality with $p=2$ and use Itô's isometry.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<h2 id="lecture-12"><a class="anchor" href="#lecture-12">Lecture 12</a></h2>
+<h3 id="stopping-an-ito-integral"><a class="anchor" href="#stopping-an-ito-integral">Stopping an Itô integral</a></h3>
+<div class="thm thm-lemma" id="lemma-3-10">
+<div class="thm-head"><a class="thm-name" href="#lemma-3-10">Lemma 3.10</a>.</div>
+<p>Let $f\in V(0,T)$ and let $\tau$ be a stopping time with values in $[0,T]$.
+If $M_t=\int_0^t f_s\,dB_s$, then
+\[
+ M_\tau=\int_0^\tau f_s\,dB_s
+ =\int_0^T f_s\mathbf{1}_{\{s&lt;\tau\}}\,dB_s.
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>The identity holds directly when $f$ is elementary and $\tau$ is a simple
+stopping time. Let $f_n$ be elementary processes with
+\[
+ \E\!\left[\int_0^T|f_n(s)-f_s|^2\,ds\right]\to0,
+\]
+and let simple stopping times $\tau_n$ converge pointwise to $\tau$. Then
+\[
+ \int_0^{\tau_n}f_n(s)\,dB_s
+ =\int_0^T f_n(s)\mathbf{1}_{\{s&lt;\tau_n\}}\,dB_s.
+\]
+The left-hand integrands converge in $L^2(\Prob\times\mcal{L})$ to
+$f(s)\mathbf{1}_{\{s&lt;\tau\}}$: one term follows from the approximation
+$f_n\to f$, and the other from dominated convergence, since
+$\mathbf{1}_{\{s&lt;\tau_n\}}\to\mathbf{1}_{\{s&lt;\tau\}}$ for Lebesgue-a.e.
+$s$. Itô's isometry consequently gives convergence in $L^2$ of the
+right-hand side.</p>
+<p>On the other hand, Doob's inequality gives uniform convergence in probability
+of $\int_0^\cdot f_n\,dB$ to $\int_0^\cdot f\,dB$. Together with continuity
+of the latter process and $\tau_n\to\tau$, this yields
+\[
+ \int_0^{\tau_n} f_n(s)\,dB_s\ \xrightarrow{\Prob}\ \int_0^\tau f_s\,dB_s.
+\]
+The two limits identify the asserted identity.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<h3 id="multidimensional-ito-integrals"><a class="anchor" href="#multidimensional-ito-integrals">Multidimensional Itô integrals</a></h3>
+<p>Let $B=(B^1,\ldots,B^n)$ be an $n$-dimensional Brownian motion; its
+coordinates are independent one-dimensional Brownian motions. Let
+$V^{m\times n}(a,b)$ be the class of $m\times n$ matrix-valued processes
+$V=(V_{ij})$ for which every entry is jointly measurable, adapted, and
+\[
+ \E\!\left[\int_a^b V_{ij}(t)^2\,dt\right]&lt;\infty.
+\]
+For $V\in V^{m\times n}(a,b)$, define
+\[
+ \int_a^bV_t\,dB_t
+ :=\begin{pmatrix}
+ \sum_{j=1}^n\int_a^bV_{1j}(t)\,dB_t^j\\
+ \vdots\\
+ \sum_{j=1}^n\int_a^bV_{mj}(t)\,dB_t^j
+ \end{pmatrix}.
+\]
+Thus the integral is an $m\times1$ random vector. Equivalently, it is the
+matrix product $\int_a^b V_t\,dB_t$ interpreted componentwise.</p>
+<h3 id="locally-square-integrable-integrands"><a class="anchor" href="#locally-square-integrable-integrands">Locally square-integrable integrands</a></h3>
+<p>The global condition
+\[
+ \E\!\left[\int_a^b f_t^2\,dt\right]&lt;\infty
+\]
+can be weakened to
+\[
+ \Prob\!\left(\int_a^b f_t^2\,dt&lt;\infty\right)=1.
+\]
+Write $\mathcal W(a,b)$ for the class of jointly measurable, adapted
+processes satisfying this almost-sure condition; similarly,
+$\mathcal W^{m\times n}(a,b)$ denotes the matrix-valued version.</p>
+<p>One construction uses the stopping times
+\[
+ \tau_n:=\inf\!\left\{t\ge a:\int_a^t f_s^2\,ds\ge n\right\}\wedge b,
+ \qquad f^{(n)}_t:=f_t\mathbf{1}_{\{t&lt;\tau_n\}}.
+\]
+Then $\tau_n\uparrow b$ almost surely and each $f^{(n)}$ belongs to
+$V(a,b)$. Define
+\[
+ \int_a^b f_t\,dB_t
+ :=\lim_{n\to\infty}\int_a^b f^{(n)}_t\,dB_t.
+\]
+The limit is well defined because the stopped integrals agree up to
+$\tau_n$ whenever the later stopping time is used.</p>
+<div class="thm thm-remark" id="remark-3-11">
+<div class="thm-head"><a class="thm-name" href="#remark-3-11">Remark 3.11</a>.</div>
+<p>The usual algebraic and stopping-time properties of the stochastic integral
+extend to $\mathcal W(a,b)$. The process
+$M_t=\int_a^t f_s\,dB_s$ need not be a true martingale, because the
+construction only gives convergence in probability rather than global
+$L^2$ convergence. It is, however, a local martingale: there are stopping
+times $\tau_n\uparrow\infty$ almost surely for which
+$(M_{t\wedge\tau_n})_{t\ge0}$ is a martingale for every $n$.</p>
+</div>
+<h2 id="lecture-13"><a class="anchor" href="#lecture-13">Lecture 13</a></h2>
+<p>Let $(B_t)_{t\ge0}$ be a one-dimensional Brownian motion on
+$(\Omega,\F,\Prob)$.</p>
+<div class="thm thm-definition" id="definition-3-12">
+<div class="thm-head"><a class="thm-name" href="#definition-3-12">Definition 3.12</a> <span class="thm-title">(Itô process)</span>.</div>
+<p>A one-dimensional Itô process is a stochastic process of the form
+\[
+ X_t=X_0+\int_0^t u_s\,ds+\int_0^t v_s\,dB_s,
+\]
+where $v$ is locally square-integrable and $u$ is adapted with
+\[
+ \int_0^t|u_s|\,ds&lt;\infty\qquad\text{almost surely for every }t\ge0.
+\]
+In differential notation, we write
+\[
+ dX_t=u_t\,dt+v_t\,dB_t.
+\]
+The process $u$ is called the <em>drift</em> and $v$ the <em>diffusion
+coefficient</em> (or volatility).</p>
+</div>
+<p>If $X$ is an Itô process, then, whenever the two terms are well defined,
+the stochastic integral with respect to $X$ is defined by
+\[
+ \int_0^t f_s\,dX_s
+ :=\int_0^t f_su_s\,ds+\int_0^t f_sv_s\,dB_s.
+\]
+For instance, this holds if $f$ is adapted and almost surely bounded on each
+finite time interval.</p>
+<div class="thm thm-theorem" id="theorem-3-13">
+<div class="thm-head"><a class="thm-name" href="#theorem-3-13">Theorem 3.13</a> <span class="thm-title">(One-dimensional Itô formula)</span>.</div>
+<p>Let $X$ satisfy $dX_t=u_t\,dt+v_t\,dB_t$, and let
+$g\in C^{1,2}([0,\infty)\times\R)$. Then
+$Y_t:=g(t,X_t)$ is an Itô process and
+\[
+ \begin{aligned}
+ g(t,X_t)=g(0,X_0)
+ &amp;+\int_0^t g_x(s,X_s)v_s\,dB_s\\
+ &amp;+\int_0^t\left[g_t(s,X_s)+g_x(s,X_s)u_s
+ +\frac12g_{xx}(s,X_s)v_s^2\right]ds.
+ \end{aligned}
+\]</p>
+</div>
+<div class="thm thm-remark" id="remark-3-14">
+<div class="thm-head"><a class="thm-name" href="#remark-3-14">Remark 3.14</a> <span class="thm-title">(Differential notation)</span>.</div>
+<p>The formula is commonly written as
+\[
+ dY_t=g_x(t,X_t)v_t\,dB_t+
+ \left[g_t(t,X_t)+g_x(t,X_t)u_t
+ +\frac12g_{xx}(t,X_t)v_t^2\right]dt.
+\]
+Equivalently,
+\[
+ dY_t=g_t(t,X_t)\,dt+g_x(t,X_t)\,dX_t
+ +\frac12g_{xx}(t,X_t)(dX_t)^2,
+\]
+using the mnemonic rules
+\[
+ (dt)^2=dt\,dB_t=dB_t\,dt=0,\qquad(dB_t)^2=dt.
+\]
+Thus $(dX_t)^2=v_t^2dt$. These are shorthand for limits of sums of
+increments, not ordinary algebraic identities.</p>
+</div>
+<p>In the simplest case, $Y_t=g(B_t)$ with $g\in C^2(\R)$, Itô's formula
+becomes
+\[
+ dY_t=g'(B_t)\,dB_t+\frac12g''(B_t)\,dt.
+\]
+The proof was deferred to the more general theory of continuous
+semimartingales.</p>
+<h2 id="lecture-14"><a class="anchor" href="#lecture-14">Lecture 14</a></h2>
+<div class="thm thm-example" id="example-3-15">
+<div class="thm-head"><a class="thm-name" href="#example-3-15">Example 3.15</a> <span class="thm-title">(Geometric Brownian motion)</span>.</div>
+<p>Let
+\[
+ X_t=X_0\exp\!\left(\left(r-\frac12\sigma^2\right)t+\sigma B_t\right).
+\]
+Set $g(t,x)=\exp((r-\tfrac12\sigma^2)t+\sigma x)$. Applying Itô's
+formula to $X_t/X_0=g(t,B_t)$ gives
+\[
+ \begin{aligned}
+ d\left(\frac{X_t}{X_0}\right)
+ &amp;=\sigma g(t,B_t)\,dB_t
+ +\left(r-\frac12\sigma^2\right)g(t,B_t)\,dt
+ +\frac12\sigma^2g(t,B_t)\,dt\\
+ &amp;=\sigma\frac{X_t}{X_0}\,dB_t+r\frac{X_t}{X_0}\,dt.
+ \end{aligned}
+\]
+Consequently,
+\[
+ X_t=X_0+\int_0^t\sigma X_s\,dB_s+\int_0^t rX_s\,ds,
+\]
+or, in differential notation,
+\[
+ dX_t=rX_t\,dt+\sigma X_t\,dB_t.
+\]</p>
+</div>
+<h3 id="integration-by-parts"><a class="anchor" href="#integration-by-parts">Integration by parts</a></h3>
+<div class="thm thm-theorem" id="theorem-3-16">
+<div class="thm-head"><a class="thm-name" href="#theorem-3-16">Theorem 3.16</a> <span class="thm-title">(Stochastic product rule)</span>.</div>
+<p>Let $X$ and $Y$ be Itô processes driven by the same Brownian motion:
+\[
+ dX_t=u_1(t)\,dt+v_1(t)\,dB_t,
+ \qquad dY_t=u_2(t)\,dt+v_2(t)\,dB_t.
+\]
+Then
+\[
+ d(X_tY_t)=X_t\,dY_t+Y_t\,dX_t+v_1(t)v_2(t)\,dt.
+\]
+Equivalently,
+\[
+ \int_0^tX_s\,dY_s
+ =X_tY_t-X_0Y_0-\int_0^tY_s\,dX_s
+ -\int_0^t v_1(s)v_2(s)\,ds.
+\]</p>
+</div>
+<p>The final integral is the difference from the classical integration-by-parts
+formula. It arises because $dB_t\,dB_t=dt$.</p>
+<h3 id="quadratic-variation"><a class="anchor" href="#quadratic-variation">Quadratic variation</a></h3>
+<p>For Brownian motion and partitions $\Pi_n$ of $[a,b]$ whose mesh tends to
+zero,
+\[
+ \sum_{[t_i,t_{i+1}]\in\Pi_n}(B_{t_{i+1}}-B_{t_i})^2
+ \xrightarrow{L^2} b-a.
+\]
+This explains the heuristic $(dB_t)^2=dt$. For example, Itô's formula
+gives
+\[
+ d(B_t^2)=2B_t\,dB_t+dt,
+\]
+so $B_t^2-t$ has no drift term and is a martingale.</p>
+<div class="thm thm-theorem" id="theorem-3-17">
+<div class="thm-head"><a class="thm-name" href="#theorem-3-17">Theorem 3.17</a> <span class="thm-title">(Quadratic variation of a continuous martingale)</span>.</div>
+<p>Let $M$ be a continuous $L^2$-bounded martingale with $M_0=0$ almost surely.
+Then there exists a unique (up to indistinguishability) continuous,
+increasing adapted process $[M]$, with $[M]_0=0$, such that
+\[
+ M_t^2-[M]_t
+\]
+is a uniformly integrable martingale. The process $[M]$ is called the
+<em>quadratic variation</em> of $M$.</p>
+</div>
+<p>For a partition $\Delta=\{t_0&lt;t_1&lt;\cdots\}$ having finitely many points in
+each bounded interval, define the realized squared-increment process
+\[
+ T_t^\Delta(M)
+ :=\sum_{i=0}^{k-1}(M_{t_{i+1}}-M_{t_i})^2+(M_t-M_{t_k})^2,
+\]
+where $t_k\le t&lt;t_{k+1}$. The omitted proof establishes the appropriate
+limit of $T_t^\Delta(M)$ as the mesh tends to zero and identifies it with
+$[M]_t$.</p>
+<h2 id="lecture-15-quadratic-variation-and-local-martingales"><a class="anchor" href="#lecture-15-quadratic-variation-and-local-martingales">Lecture 15: Quadratic Variation and Local Martingales</a></h2>
+<p>Throughout this section, let \(M=\{M_t\}_{t\ge 0}\) be a continuous, \(L^2\)-bounded martingale with \(M_0=0\). We first treat the case in which \(M\) is bounded.</p>
+<p>Fix \(a&gt;0\), and let
+\[
+\Delta=\{0=t_0&lt;t_1&lt;\cdots&lt;t_k=a\}
+\]
+be a partition of \([0,a]\). For \(t\in[t_j,t_{j+1})\), define
+\[
+T_t^\Delta(M)
+=
+\sum_{i=0}^{j-1}(M_{t_{i+1}}-M_{t_i})^2
++
+(M_t-M_{t_j})^2.
+\]
+Thus, at a partition point \(t_j\),
+\[
+T_{t_j}^\Delta(M)
+=
+\sum_{i=0}^{j-1}(M_{t_{i+1}}-M_{t_i})^2.
+\]</p>
+<p>For each fixed partition \(\Delta\), the process
+\[
+\{M_t^2-T_t^\Delta(M)\}_{0\le t\le a}
+\]
+is a martingale. Indeed, on an interval \([t_j,t_{j+1})\),
+\[
+M_t^2-T_t^\Delta(M)
+=
+\left(M_{t_j}^2-\sum_{i=0}^{j-1}(M_{t_{i+1}}-M_{t_i})^2\right)
++
+2M_{t_j}(M_t-M_{t_j}),
+\]
+and the final term is a martingale on that interval.</p>
+<p>Let \(\{\Delta_n\}\) be a sequence of partitions of \([0,a]\) whose meshes tend to zero. Earlier, we showed that
+\[
+\{T_a^{\Delta_n}(M)\}_{n\ge 1}
+\]
+is Cauchy in \(L^2\). Since
+\[
+T^{\Delta_n}(M)-T^{\Delta_m}(M)
+\]
+is a martingale, Doob's \(L^2\) maximal inequality gives
+\[
+\mathbb P\left(
+\sup_{0\le s\le a}
+\left|T_s^{\Delta_n}(M)-T_s^{\Delta_m}(M)\right|
+\ge \lambda
+\right)
+\le
+\frac{1}{\lambda^2}
+\mathbb E\left[
+\left(T_a^{\Delta_n}(M)-T_a^{\Delta_m}(M)\right)^2
+\right].
+\]
+Consequently, \(\{T^{\Delta_n}(M)\}\) is Cauchy in probability for the supremum norm on \([0,a]\).</p>
+<p>We may therefore select a subsequence \(\{\Delta_{n_k}\}\) such that
+\[
+\mathbb P\left(
+\sup_{0\le s\le a}
+\left|T_s^{\Delta_{n_{k+1}}}(M)-T_s^{\Delta_{n_k}}(M)\right|
+\ge 2^{-k}
+\right)
+\le 2^{-k}.
+\]
+Let
+\[
+A_k=
+\left\{
+\sup_{0\le s\le a}
+\left|T_s^{\Delta_{n_{k+1}}}(M)-T_s^{\Delta_{n_k}}(M)\right|
+\ge 2^{-k}
+\right\}.
+\]
+Since
+\[
+\sum_{k=1}^{\infty}\mathbb P(A_k)&lt;\infty,
+\]
+the Borel&ndash;Cantelli lemma implies that, almost surely, only finitely many \(A_k\) occur. Hence, almost surely,
+\[
+\{T^{\Delta_{n_k}}(M)\}_{k\ge 1}
+\]
+is Cauchy in the supremum norm on \([0,a]\). It therefore converges uniformly on \([0,a]\) to a continuous process, denoted by \([M]\).</p>
+<p>The limit does not depend on the particular sequence of partitions with mesh tending to zero. Repeating this construction on \([0,1],[0,2],\ldots\) and using a diagonal subsequence gives a continuous process \([M]=\{[M]_t\}_{t\ge0}\).</p>
+<p>We now show that \([M]\) is increasing. Let \(0\le s&lt;t\). Since the limit is independent of the choice of partitions, we may choose partitions containing both \(s\) and \(t\). Then
+\[
+T_s^\Delta(M)\le T_t^\Delta(M),
+\]
+because at partition points these quantities are partial sums of nonnegative squared increments. Taking limits yields
+\[
+[M]_s\le [M]_t.
+\]
+Also, \([M]_0=0\).</p>
+<p>For bounded \(M\), we may pass to the limit in
+\[
+M_t^2-T_t^\Delta(M).
+\]
+Thus,
+\[
+M_t^2-[M]_t
+\]
+is a martingale. Moreover,
+\[
+\mathbb E([M]_t)=\mathbb E(M_t^2).
+\]
+Since \([M]\) is increasing and \(M\) is bounded,
+\[
+\mathbb E([M]_\infty)
+=
+\lim_{t\to\infty}\mathbb E([M]_t)
+=
+\lim_{t\to\infty}\mathbb E(M_t^2)
+&lt;\infty.
+\]
+Hence \([M]_t\le [M]_\infty\) for every \(t\), and the family
+\[
+\{M_t^2-[M]_t:t\ge0\}
+\]
+is uniformly integrable.</p>
+<div class="thm thm-theorem" id="theorem-3-18">
+<div class="thm-head"><a class="thm-name" href="#theorem-3-18">Theorem 3.18</a> <span class="thm-title">(Uniqueness of quadratic variation)</span>.</div>
+<p>Suppose that \(Y^1\) and \(Y^2\) are continuous increasing processes, both vanishing at zero, such that
+\[
+M^2-Y^1
+\qquad\text{and}\qquad
+M^2-Y^2
+\]
+are martingales. Then \(Y^1=Y^2\) almost surely.</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Set
+\[
+Z=Y^1-Y^2.
+\]
+Then
+\[
+Z=(M^2-Y^2)-(M^2-Y^1),
+\]
+so \(Z\) is a continuous martingale with \(Z_0=0\). Since \(Y^1\) and \(Y^2\) both have finite variation, \(Z\) has finite variation. Therefore,
+\[
+[Z]=0.
+\]
+Since \(Z^2-[Z]=Z^2\) is a martingale,
+\[
+\mathbb E(Z_t^2)=\mathbb E(Z_0^2)=0.
+\]
+Thus \(Z_t=0\) almost surely for every \(t\), and hence \(Y^1=Y^2\).</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<p>We now remove the assumption that \(M\) is bounded. Define
+\[
+T_n=\inf\{t\ge0:|M_t|\ge n\}.
+\]
+Since \(M\) is continuous, the stopped martingale
+\[
+M^{T_n}_t=M_{t\wedge T_n}
+\]
+is bounded by \(n\). Therefore it has a quadratic variation process, denoted by \(A^n\), such that
+\[
+(M^{T_n})^2-A^n
+\]
+is a martingale.</p>
+<p>For \(n&lt;m\), stopping the martingale
+\[
+(M^{T_m})^2-A^m
+\]
+at time \(T_n\) gives
+\[
+(M^{T_n})^2-(A^m)^{T_n},
+\]
+which is also a martingale. By uniqueness for bounded martingales,
+\[
+A^n=(A^m)^{T_n}.
+\]
+Thus these processes agree consistently before the corresponding stopping times. We may define
+\[
+[M]_t=A^n_t
+\qquad\text{on } \{t\le T_n\}.
+\]
+This definition is independent of \(n\), and \([M]\) is continuous, increasing, and satisfies \([M]_0=0\).</p>
+<div class="thm thm-definition" id="definition-3-19">
+<div class="thm-head"><a class="thm-name" href="#definition-3-19">Definition 3.19</a> <span class="thm-title">(Local martingale)</span>.</div>
+<p>An adapted process \(X=\{X_t\}_{t\ge0}\) is called an
+\((\mathcal F_t,\mathbb P)\)-local martingale if there exist stopping times
+\[
+T_n\uparrow\infty
+\qquad\text{almost surely}
+\]
+such that \(X^{T_n}\) is a martingale for every \(n\). The sequence
+\(\{T_n\}\) is called a <em>localizing sequence</em> or <em>reducing sequence</em>.</p>
+</div>
+<p>A standard example of a strict local martingale is obtained from three-dimensional Brownian motion \(B\), started away from the origin:
+\[
+X_t=\frac{1}{\|B_t\|}.
+\]
+This is a local martingale. For example, one may localize it using
+\[
+T_n=\inf\{t\ge0:X_t\ge n\}.
+\]</p>
+<h2 id="lecture-16-class-dl-quadratic-covariation-and-elementary-ito-integrals"><a class="anchor" href="#lecture-16-class-dl-quadratic-covariation-and-elementary-ito-integrals">Lecture 16: Class $DL$, Quadratic Covariation, and Elementary Itô Integrals</a></h2>
+<h3 id="when-is-a-local-martingale-a-martingale"><a class="anchor" href="#when-is-a-local-martingale-a-martingale">When is a local martingale a martingale?</a></h3>
+<p>We have already encountered many local martingales of the form
+\[
+\int_0^t H_s\,dB_s.
+\]
+If the integrand satisfies an appropriate \(L^2\) condition, then the stochastic integral is in fact a true martingale. We now give a more general criterion.</p>
+<div class="thm thm-definition" id="definition-3-20">
+<div class="thm-head"><a class="thm-name" href="#definition-3-20">Definition 3.20</a> <span class="thm-title">(Class \(DL\))</span>.</div>
+<p>An adapted process \(X=\{X_t\}_{t\ge0}\) is said to be in <em>class \(DL\)</em> if, for every \(a&gt;0\), the family
+\[
+\{X_T: T\text{ is a stopping time and }0\le T\le a\}
+\]
+is uniformly integrable.</p>
+</div>
+<p>The notation \(DL\) is commonly interpreted as either <em>Doob localized</em> or <em>dominated localized</em>.</p>
+<div class="thm thm-lemma" id="lemma-3-21">
+<div class="thm-head"><a class="thm-name" href="#lemma-3-21">Lemma 3.21</a>.</div>
+<p>Let \(Y\in L^1\), and let \(\{\mathcal G_\alpha\}_{\alpha\in I}\) be any collection of sub-\(\sigma\)-algebras of \(\mathcal F\). Then the family
+\[
+\left\{\mathbb E[Y\mid\mathcal G_\alpha]:\alpha\in I\right\}
+\]
+is uniformly integrable.</p>
+</div>
+<div class="thm thm-theorem" id="theorem-3-22">
+<div class="thm-head"><a class="thm-name" href="#theorem-3-22">Theorem 3.22</a>.</div>
+<p>A continuous local martingale \(X\) is a martingale if and only if it is in class \(DL\).</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Suppose first that \(X\) is a martingale. Let \(T\) be a stopping time satisfying \(0\le T\le a\). By optional sampling,
+\[
+X_T=\mathbb E[X_a\mid\mathcal F_T].
+\]
+The lemma implies that
+\[
+\{X_T:0\le T\le a\}
+\]
+is uniformly integrable. Since this holds for every \(a&gt;0\), \(X\) is in class \(DL\).</p>
+<p>Conversely, suppose that \(X\) is a local martingale in class \(DL\), and let \(\{T_n\}\) be a localizing sequence. Fix \(0\le s\le t\), and let \(A\in\mathcal F_s\). Since \(X^{T_n}\) is a martingale,
+\[
+\mathbb E\left[X_{t\wedge T_n};A\right]
+=
+\mathbb E\left[X_{s\wedge T_n};A\right].
+\]
+Because \(T_n\uparrow\infty\) almost surely and \(X\) has continuous paths,
+\[
+X_{t\wedge T_n}\to X_t
+\qquad\text{and}\qquad
+X_{s\wedge T_n}\to X_s
+\]
+almost surely. Moreover, both sequences are uniformly integrable, since \(X\) is in class \(DL\). Therefore the convergences also hold in \(L^1\), and we obtain
+\[
+\mathbb E[X_t;A]=\mathbb E[X_s;A].
+\]
+Since this holds for every \(A\in\mathcal F_s\),
+\[
+\mathbb E[X_t\mid\mathcal F_s]=X_s.
+\]
+Thus \(X\) is a martingale.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<h3 id="the-process-m2-m-for-an-l2-bounded-martingale"><a class="anchor" href="#the-process-m2-m-for-an-l2-bounded-martingale">The process $M^2-[M]$ for an $L^2$-bounded martingale</a></h3>
+<p>Let \(M\) be a continuous, \(L^2\)-bounded martingale with \(M_0=0\). We prove that
+\[
+M^2-[M]
+\]
+is a uniformly integrable martingale.</p>
+<p>Since \(M\) is \(L^2\)-bounded, it converges in \(L^2\) and almost surely to some random variable \(M_\infty\in L^2\). Doob's \(L^2\) maximal inequality gives
+\[
+\mathbb E\left[(M_\infty^*)^2\right]
+\le
+4\mathbb E[M_\infty^2]
+&lt;\infty,
+\qquad
+M_\infty^*:=\sup_{t\ge0}|M_t|.
+\]</p>
+<p>Let
+\[
+T_n=\inf\{t\ge0:|M_t|\ge n\}.
+\]
+For each \(n\), the stopped martingale \(M^{T_n}\) is bounded. Hence,
+\[
+\mathbb E\left([M]_{t\wedge T_n}\right)
+=
+\mathbb E\left(M_{t\wedge T_n}^2\right)
+\le
+\mathbb E\left[(M_\infty^*)^2\right].
+\]
+As \(n\to\infty\), we have \(t\wedge T_n\uparrow t\) almost surely, and therefore
+\[
+[M]_{t\wedge T_n}\uparrow [M]_t.
+\]
+By monotone convergence,
+\[
+\mathbb E([M]_t)
+\le
+\mathbb E\left[(M_\infty^*)^2\right].
+\]
+Letting \(t\to\infty\), again by monotone convergence,
+\[
+\mathbb E([M]_\infty)
+=
+\lim_{t\to\infty}\mathbb E([M]_t)
+\le
+\mathbb E\left[(M_\infty^*)^2\right]
+&lt;\infty.
+\]</p>
+<p>Consequently,
+\[
+\sup_{t\ge0}|M_t^2-[M]_t|
+\le
+(M_\infty^*)^2+[M]_\infty,
+\]
+and the right-hand side is integrable. Thus \(M^2-[M]\) is in class \(DL\). Since it is already a local martingale, the preceding theorem implies that
+\[
+M^2-[M]
+\]
+is a uniformly integrable martingale.</p>
+<h3 id="quadratic-covariation"><a class="anchor" href="#quadratic-covariation">Quadratic covariation</a></h3>
+<div class="thm thm-definition" id="definition-3-23">
+<div class="thm-head"><a class="thm-name" href="#definition-3-23">Definition 3.23</a> <span class="thm-title">(Quadratic covariation)</span>.</div>
+<p>Let \(M\) and \(N\) be continuous, \(L^2\)-bounded martingales with
+\[
+M_0=N_0=0.
+\]
+Their <em>quadratic covariation</em> is defined by polarization:
+\[
+[M,N]
+=
+\frac14\left([M+N]-[M-N]\right).
+\]</p>
+</div>
+<p>In particular,
+\[
+[M,M]=[M].
+\]</p>
+<div class="thm thm-theorem" id="theorem-3-24">
+<div class="thm-head"><a class="thm-name" href="#theorem-3-24">Theorem 3.24</a>.</div>
+<p>The process \([M,N]\) is the unique continuous finite-variation process vanishing at zero such that
+\[
+MN-[M,N]
+\]
+is a uniformly integrable martingale.</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>Omitted.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<nav class="pager"><span><a href="brownian-motion.html">&larr; 2. Brownian Motion</a></span><span><a href="ito-integral-l2-martingales.html">4. Construction of Itô's Integral with Respect to Continuous $L^2$-Bounded Martingales &rarr;</a></span></nav>
+</main>
+</body>
+</html>

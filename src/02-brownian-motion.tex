@@ -1,0 +1,346 @@
+\chapter{Brownian Motion}
+\section{Lecture 8 Continued}
+
+Work on a filtered probability space
+$(\Omega,\mathcal{F},(\mathcal{F}_t)_{t\ge0},\mathbb{P})$.
+
+\begin{definition}[Standard Brownian motion]
+An adapted process $B=(B_t)_{t\ge0}$ is a standard one-dimensional
+$(\mathcal{F}_t)$-Brownian motion if:
+\begin{enumerate}
+ \item $B_0=0$ almost surely;
+ \item $B$ has continuous sample paths almost surely;
+ \item for $0\le s\le t$, the increment $B_t-B_s$ is independent of
+ $\mathcal{F}_s$ and
+ \[
+ B_t-B_s\sim\mathcal{N}(0,t-s).
+ \]
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Gaussian process]
+A process $(G_t)_{t\ge0}$ is called a \emph{Gaussian process} if, for every
+finite collection of times $t_1,\ldots,t_n$, the random vector
+$(G_{t_1},\ldots,G_{t_n})$ has a multivariate normal distribution.
+\end{definition}
+
+\begin{proposition}[Gaussian characterization of Brownian motion]
+Let $B$ be an adapted process with continuous paths almost surely. Relative
+to its natural filtration
+\[
+ \mathcal{F}_t^B:=\sigma(B_s:0\le s\le t),
+\]
+$B$ is Brownian motion if and only if:
+\begin{enumerate}
+ \item $B$ is a Gaussian process;
+ \item $\mathbb{E}[B_t]=0$ for every $t\ge0$;
+ \item $\mathbb{E}[B_sB_t]=s\wedge t$ for every $s,t\ge0$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+Suppose first that $B$ is Brownian motion. Every finite vector
+$(B_{t_1},\ldots,B_{t_n})$ is Gaussian because it can be written as a linear
+transformation of the independent Gaussian increments. Also,
+$\mathbb{E}[B_t]=0$. If $s\le t$, then
+\begin{align*}
+ \mathbb{E}[B_sB_t]
+ &=\mathbb{E}\bigl[B_s(B_s+B_t-B_s)\bigr]\\
+ &=\mathbb{E}[B_s^2]+\mathbb{E}[B_s(B_t-B_s)]\\
+ &=s,
+\end{align*}
+since $B_t-B_s$ is independent of $\mathcal{F}_s$ and has mean zero.
+
+Conversely, assume the three displayed properties. Since
+$\mathbb{E}[B_0^2]=0$, we have $B_0=0$ almost surely. For $s\le t$,
+the Gaussian variable $B_t-B_s$ has mean zero and variance
+\[
+ \operatorname{Var}(B_t-B_s)=t+s-2s=t-s.
+\]
+Hence $B_t-B_s\sim\mathcal{N}(0,t-s)$. Moreover, for every
+$r\le s$,
+\[
+ \operatorname{Cov}(B_t-B_s,B_r)=(r\wedge t)-(r\wedge s)=r-r=0.
+\]
+The vector $(B_t-B_s,B_{r_1},\ldots,B_{r_m})$ is jointly Gaussian whenever
+$r_1,\ldots,r_m\le s$. For jointly Gaussian random variables, zero
+covariance implies independence. Thus $B_t-B_s$ is independent of
+$\mathcal{F}_s^B$, proving the Brownian-increment property.
+\end{proof}
+
+\noindent\textit{Filtration caveat.} The preceding characterization proves
+independence from the \emph{natural} filtration. If a larger filtration is
+used, one must additionally assume that it contains no information about
+future Brownian increments; otherwise the covariance conditions alone do not
+imply independence from $\mathcal{F}_s$.
+
+\begin{theorem}[L\'evy's characterization]
+Let $X$ be an $(\mathcal{F}_t)$-adapted continuous process with $X_0=0$.
+Then $X$ is an $(\mathcal{F}_t)$-Brownian motion if and only if both $X$ and
+$(X_t^2-t)_{t\ge0}$ are martingales.
+\end{theorem}
+
+\begin{proof}[Proof of the ``only if'' direction]
+If $X$ is Brownian motion, then it is a martingale because its increments
+are independent of the past and have mean zero. For $s\le t$, write
+$X_t=X_s+(X_t-X_s)$. Conditional on $\mathcal{F}_s$, the increment
+$X_t-X_s$ has mean zero and second moment $t-s$. Therefore
+\begin{align*}
+ \mathbb{E}[X_t^2-t\mid\mathcal{F}_s]
+ &=X_s^2+2X_s\mathbb{E}[X_t-X_s\mid\mathcal{F}_s]
+   +\mathbb{E}[(X_t-X_s)^2\mid\mathcal{F}_s]-t\\
+ &=X_s^2+(t-s)-t=X_s^2-s.
+\end{align*}
+Thus $(X_t^2-t)_{t\ge0}$ is a martingale.
+\end{proof}
+
+\begin{theorem}[Strong Markov property of Brownian motion]
+Let $(B_t)_{t\ge0}$ be a Brownian motion with respect to a filtration
+$(\mathcal{F}_t)_{t\ge0}$ satisfying the usual conditions, and let $\tau$ be
+an almost surely finite stopping time. Then the shifted process
+\[
+W_t:=B_{\tau+t}-B_\tau,\qquad t\ge0,
+\]
+is a Brownian motion independent of $\mathcal{F}_\tau$.
+
+Equivalently, if $0\le t_1<\cdots<t_n$ and $h:\mathbb{R}^n\to\mathbb{R}$
+is bounded and Borel measurable, then
+\[
+\mathbb{E}\!\left[
+h\bigl(B_{\tau+t_1}-B_\tau,\ldots,B_{\tau+t_n}-B_\tau\bigr)
+\;\middle|\; \mathcal{F}_\tau
+\right]
+=
+\mathbb{E}\!\left[h(B_{t_1},\ldots,B_{t_n})\right].
+\]
+\end{theorem}
+
+\begin{proof}
+We first prove the result when $\tau$ is a simple stopping time, taking
+values $r_1,\ldots,r_m$. Let $A\in\mathcal{F}_\tau$. Since
+$A\cap\{\tau=r_j\}\in\mathcal{F}_{r_j}$, the independent-increments
+property of Brownian motion gives
+\[
+\begin{aligned}
+&\mathbb{E}\!\left[
+\mathbf{1}_A
+h\bigl(B_{\tau+t_1}-B_\tau,\ldots,B_{\tau+t_n}-B_\tau\bigr)
+\right] \\
+&\qquad =
+\sum_{j=1}^m
+\mathbb{E}\!\left[
+\mathbf{1}_{A\cap\{\tau=r_j\}}
+h\bigl(B_{r_j+t_1}-B_{r_j},\ldots,B_{r_j+t_n}-B_{r_j}\bigr)
+\right] \\
+&\qquad =
+\sum_{j=1}^m
+\mathbb{P}(A\cap\{\tau=r_j\})
+\mathbb{E}\!\left[h(B_{t_1},\ldots,B_{t_n})\right] \\
+&\qquad =
+\mathbb{P}(A)\mathbb{E}\!\left[h(B_{t_1},\ldots,B_{t_n})\right].
+\end{aligned}
+\]
+This is exactly the desired conditional-expectation identity.
+
+For a general bounded stopping time $\tau$, approximate it from above by
+simple stopping times:
+\[
+\tau_n:=2^{-n}\left\lceil 2^n\tau\right\rceil.
+\]
+Then $\tau_n\downarrow\tau$. Since Brownian paths are continuous,
+\[
+B_{\tau_n+t_i}-B_{\tau_n}
+\longrightarrow
+B_{\tau+t_i}-B_\tau
+\qquad\text{almost surely}
+\]
+for each $i$. Applying the simple-stopping-time result to $\tau_n$ and
+passing to the limit using bounded convergence proves the result for bounded
+$\tau$. An arbitrary almost surely finite stopping time follows by applying
+the bounded case to $\tau\wedge N$ and then letting $N\to\infty$.
+\end{proof}
+
+\begin{remark}[Interpretation]
+The ordinary Markov property says that, after a fixed deterministic time
+$s$, the future process $(B_{s+t}-B_s)_{t\ge0}$ is a new Brownian motion
+independent of the past $\mathcal{F}_s$.
+
+The strong Markov property says the same remains true if the time $s$ is
+replaced by a random time $\tau$, provided that $\tau$ is a stopping time:
+the decision that ``now is time $\tau$'' may use information from the past,
+but not information from the future.
+\end{remark}
+
+\begin{theorem}[Reflection principle]
+Let $a>0$ and define
+\[
+T_a:=\inf\{s\ge0:B_s=a\},
+\qquad
+M_t:=\sup_{0\le s\le t}B_s.
+\]
+Then, for every $t>0$,
+\[
+\mathbb{P}(M_t\ge a)
+=
+\mathbb{P}(T_a\le t)
+=
+2\mathbb{P}(B_t\ge a).
+\]
+Consequently,
+\[
+M_t\overset{d}{=}|B_t|.
+\]
+\end{theorem}
+
+\begin{proof}
+Since Brownian paths are continuous and $B_0=0<a$,
+\[
+\{M_t\ge a\}=\{T_a\le t\}.
+\]
+
+We now explain the reflection argument. Consider a path for which
+$T_a\le t$ and $B_t<a$. Such a path reaches the level $a$ for the first
+time at $T_a$, and then ends below $a$. Reflect the part of the path after
+this first hitting time across the horizontal line at height $a$:
+\[
+\widetilde B_s:=
+\begin{cases}
+B_s, & 0\le s\le T_a,\\
+2a-B_s, & s>T_a.
+\end{cases}
+\]
+The reflected path has the same history up to $T_a$, but its terminal value is
+\[
+\widetilde B_t=2a-B_t>a.
+\]
+
+Why does this reflection preserve probabilities? By the strong Markov
+property, conditional on $\mathcal{F}_{T_a}$, the post-hitting process
+\[
+W_u:=B_{T_a+u}-B_{T_a},\qquad u\ge0,
+\]
+is a fresh Brownian motion independent of $\mathcal{F}_{T_a}$. Brownian
+motion is symmetric, meaning
+\[
+(W_u)_{u\ge0}\overset{d}{=}(-W_u)_{u\ge0}.
+\]
+But reflecting the original path after $T_a$ replaces $W$ by $-W$, because
+\[
+\widetilde B_{T_a+u}-a
+=
+2a-B_{T_a+u}-a
+=
+-(B_{T_a+u}-a)
+=
+-W_u.
+\]
+Hence reflection preserves the conditional distribution of the future given
+the past up to $T_a$.
+
+Reflecting twice gives back the original path. Thus reflection pairs paths in
+\[
+\{T_a\le t,\ B_t<a\}
+\]
+with paths in
+\[
+\{B_t>a\}.
+\]
+The latter paths necessarily hit $a$ before time $t$, since they start at
+$0<a$ and end above $a$. Therefore,
+\[
+\mathbb{P}(T_a\le t,\ B_t<a)=\mathbb{P}(B_t>a).
+\]
+
+Now split according to the terminal value:
+\[
+\begin{aligned}
+\mathbb{P}(T_a\le t)
+&=
+\mathbb{P}(T_a\le t,\ B_t\ge a)
++
+\mathbb{P}(T_a\le t,\ B_t<a) \\
+&=
+\mathbb{P}(B_t\ge a)+\mathbb{P}(B_t>a).
+\end{aligned}
+\]
+Since $B_t\sim\mathcal{N}(0,t)$ has a continuous distribution,
+\[
+\mathbb{P}(B_t>a)=\mathbb{P}(B_t\ge a).
+\]
+Hence
+\[
+\mathbb{P}(T_a\le t)=2\mathbb{P}(B_t\ge a).
+\]
+
+Finally, for $x\ge0$,
+\[
+\begin{aligned}
+\mathbb{P}(M_t\le x)
+&=1-\mathbb{P}(M_t>x) \\
+&=1-2\mathbb{P}(B_t>x) \\
+&=\mathbb{P}(|B_t|\le x).
+\end{aligned}
+\]
+Therefore $M_t\overset{d}{=}|B_t|$.
+\end{proof}
+\section{Lecture 9}
+
+Some scaling properties of Brownian motion (self-similarity):
+\[
+\{B_{at}\}_{t \ge 0} \overset{d}{=} \{a^{1/2} B_t\}_{t \ge 0}
+\]
+Insert proof (just algebra)
+
+\begin{theorem}
+Let $B$ be a BM. Then, the process
+\[
+\begin{cases}
+X_0 &= 0 \\
+X_t &= tB_{1/t} \quad t > 0
+\end{cases}
+\]
+is also a BM.
+\end{theorem}
+For the proof, we check the algebra for the second definition of BM.
+
+\begin{corollary}
+$\Prob( \inf\{
+    t > 0 \colon B_t = 0
+\} = 0) = 1$. Ie, 0 is almost surely an accumulation point of zeroes of a BM. In fact, any zero is an accumulation point.
+\end{corollary}
+
+\begin{theorem}
+Almost surely, the path of a BM is of unbounded variation on any compact interval. (This is why Stochastic Calculus exists!!)
+\end{theorem}
+\begin{proof}
+$\{\Pi_n\}$ be an increasing sequence of partitions of $[a,b]$. Further, let $\{\Pi_n\}$ be such that the mesh of $\{\Pi_n\}$ goes to zero. Now, consider
+\begin{align*}
+&\left(\sum_{t_i \in \Pi_n} (B_{t_{i+1}}-B_{t_i})^2\right) - (b-a) \\
+&= \sum_{t_i \in \Pi_n} (B_{t_{i+1}}-B_{t_i})^2 - (t_{i+1}-t_i) \\
+\end{align*}
+Now, we will show that this goes to zero in $L^2$. All the terms within the sum are independent random variables with mean zero. This then shows that
+\begin{align*}
+&\E\left((\sum_{t_i \in \Pi_n} (B_{t_{i+1}}-B_{t_i})^2 - (t_{i+1}-t_i))^2\right) \\
+&= \sum_{t_i \in \Pi_n} \E((B_{t_{i+1}}-B_{t_i})^2 - (t_{i+1}-t_i))^2
+\end{align*}
+We know that
+\[
+\frac{(B_{t_{i+1}}-B_{t_i})^2}{t_{i+1}-t_i} \sim Z^2,
+\]
+where $Z \sim \mcal{N}(0,1)$. So, we then get
+\begin{align*}
+&\sum_{t_i \in \Pi_n} (t_{i+1}-t_i)^2 \E((Z^2-1)^2) \\
+& \le \E((Z^2-1)^2)  \sup_{t_i \in \Pi_n} |t_{i+1}-t_i| (b-a) \\
+&\to 0,
+\end{align*}
+since the mesh of $\{\Pi_n\}$ goes to zero.
+
+So, $\sum_{t_i \in \Pi_n} (B_{t_{i+1}} - B_{t_i})^2 \overset{L^2}{\to} b-a$.
+
+Thus, there exists a subsequence $\{\Pi_n'\}$ such that we have almost sure convergence. On the other hand,
+\begin{align*}
+&\sum_{t_i \in \Pi_n'} (B_{t_{i+1}}-B_{t_i})^2 \\
+&\le \sup_{t_i \in \Pi_n'} |B_{t_{i+1}}-B_{t_i}| \cdot \sum_{t_i \in \Pi_n'}|B_{t_{i+1}}-B_{t_i}| \\
+&\le \sup_{t_i \in \Pi_n'} |B_{t_{i+1}}-B_{t_i}|  \cdot \operatorname{TV}_{[a,b]}(B)
+\end{align*}
+Now, since $B$ is continuous on a compact interval, we can use uniform continuity, so that $\sup_{t_i \in \Pi_n'} |B_{t_{i+1}}-B_{t_i}|  \to 0$. This means that the total variation cannot be finite, since if it was, the summation expression would converge to 0, which would not have $L^2$ norm going to $b-a$.
+\end{proof}

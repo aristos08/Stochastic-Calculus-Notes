@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Martingales | Stochastic Calculus Notes</title>
-<link rel="stylesheet" href="style.css?v=77b160bf">
+<link rel="stylesheet" href="style.css?v=be02ea21">
 <script>
   window.MathJax = {
     tex: {
@@ -14,7 +14,9 @@
       macros: {
       mcal: ["\\mathcal{#1}", 1],
       Prob: "\\mathbb{P}",
-      E: "\\mathbb{E}"
+      E: "\\mathbb{E}",
+      F: "\\mathcal{F}",
+      R: "\\mathbb{R}"
       }
     },
     chtml: { displayAlign: 'center' },
@@ -34,7 +36,8 @@
 <a href="#lecture-4">Lecture 4</a>
 <a href="#lecture-5">Lecture 5</a>
 <a href="#lecture-6">Lecture 6</a>
-<a href="#lecture-7">Lecture 7</a></div>
+<a href="#lecture-7">Lecture 7</a>
+<a href="#lecture-8-optional-sampling-and-brownian-motion">Lecture 8: Optional Sampling and Brownian Motion</a></div>
 </nav>
 <main>
 <h1>Chapter 1<br><span class="chapter-name">Martingales</span></h1>
@@ -1870,7 +1873,38 @@ supermartingale converges almost surely.</p>
 <p>Uniform integrability is therefore the key
 additional condition that upgrades almost-sure
 martingale convergence to $L^1$ convergence.</p>
-<nav class="pager"><span></span><span></span></nav>
+<h2 id="lecture-8-optional-sampling-and-brownian-motion"><a class="anchor" href="#lecture-8-optional-sampling-and-brownian-motion">Lecture 8: Optional Sampling and Brownian Motion</a></h2>
+<h3 id="a-final-optional-sampling-consequence"><a class="anchor" href="#a-final-optional-sampling-consequence">A final optional-sampling consequence</a></h3>
+<div class="thm thm-corollary" id="corollary-1-32">
+<div class="thm-head"><a class="thm-name" href="#corollary-1-32">Corollary 1.32</a>.</div>
+<p>Let $(X_t)_{t\in T}$ be a martingale, where $T=\mathbb{N}_0$ or
+$T=[0,\infty)$. Let $\tau$ be a stopping time taking values in
+$\overline{\mathbb{N}}_0$ or $\overline{\mathbb{R}}_+$, respectively.
+Suppose that there is a constant $c$ such that
+\[
+ |X_{t\wedge\tau}|\le c\qquad\text{almost surely for every }t\in T.
+\]
+Then the limit
+\[
+ X_\tau:=\lim_{t\to\infty}X_{t\wedge\tau}
+\]
+exists almost surely and
+\[
+ \mathbb{E}[X_\tau]=\mathbb{E}[X_0].
+\]</p>
+</div>
+<div class="proof"><span class="proof-label">Proof.</span>
+<p>The stopped process $X^\tau=(X_{t\wedge\tau})_{t\in T}$ is a bounded
+martingale, hence uniformly integrable. The martingale convergence theorem
+therefore gives almost sure and $L^1$ convergence to a limit $X_\tau$.
+Optional sampling gives
+\[
+ \mathbb{E}[X_{t\wedge\tau}]=\mathbb{E}[X_0]
+\]
+for every $t$. Taking $t\to\infty$ and using $L^1$ convergence proves the
+claim.</p>
+<span class="qed" aria-label="end of proof">&#8718;</span></div>
+<nav class="pager"><span></span><span><a href="brownian-motion.html">2. Brownian Motion &rarr;</a></span></nav>
 </main>
 </body>
 </html>

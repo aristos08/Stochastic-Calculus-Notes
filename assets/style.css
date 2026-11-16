@@ -18,11 +18,10 @@
 
   --content-w: 820px;
 
-  /* Latin Modern / Computer Modern loaded via the font CDN links in each page;
-     the stack falls back to a serif if the web font is unavailable. */
-  --serif: "Latin Modern Roman", "CMU Serif", "Computer Modern Serif",
-           "Latin Modern Math", Georgia, "Times New Roman", serif;
-  --ui: "Latin Modern Roman", "CMU Serif", Georgia, serif;
+  /* "CMUSerifWeb" is our own @font-face (Computer Modern), declared in each
+     page's <head>. Falls back to Georgia if the web font is unavailable. */
+  --serif: "CMUSerifWeb", Georgia, "Times New Roman", serif;
+  --ui: "CMUSerifWeb", Georgia, serif;
 }
 
 * { box-sizing: border-box; }
@@ -90,6 +89,18 @@ a:hover { text-decoration: underline; }
 }
 .toc-links a:hover { background: var(--accent); color: #fff; text-decoration: none; }
 
+/* temporary web-font load indicator (remove once confirmed) */
+#font-probe {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+#font-probe.ok  { color: #1f6d33; background: #e6f4ea; }
+#font-probe.bad { color: #9a2a1e; background: #fbe7e4; }
+
 /* ---------- main column ---------- */
 main {
   width: 100%;
@@ -156,8 +167,8 @@ p { margin: 0.8rem 0; }
 
 .thm-head {
   font-family: var(--ui);
-  font-size: 1.2rem;
-  margin-bottom: 0.2rem;
+  font-size: 1.35rem;
+  margin-bottom: 0.25rem;
   color: var(--c);
 }
 .thm-name { color: var(--c); font-weight: 700; }

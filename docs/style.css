@@ -18,11 +18,13 @@
 
   --content-w: 820px;
 
-  /* Computer Modern web font, linked in each page's <head> (vsalvino CDN).
-     Falls back to Georgia if the web font is unavailable. */
-  --serif: "Computer Modern Serif", "CMU Serif", "Latin Modern Roman",
+  /* Computer Modern web font, linked in each page's <head> (vsalvino + fontsource
+     CDNs). We list every family name those packages might register, so whichever
+     one the browser loaded is actually used. Falls back to Georgia if none load. */
+  --serif: "Computer Modern Serif", "CMU Serif", "CMU Serif Roman",
+           "Latin Modern Roman", "Latin Modern Roman 10", "LM Roman 10",
            Georgia, "Times New Roman", serif;
-  --ui: "Computer Modern Serif", "CMU Serif", Georgia, serif;
+  --ui: "Computer Modern Serif", "CMU Serif", "Latin Modern Roman", Georgia, serif;
 }
 
 * { box-sizing: border-box; }

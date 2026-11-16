@@ -14,21 +14,29 @@
   document.addEventListener("DOMContentLoaded", function () {
     var el = document.getElementById("font-probe");
     if (!el || !document.fonts || !document.fonts.check) return;
-    var families = ['"Computer Modern Serif"', '"CMU Serif"', '"Latin Modern Roman"'];
+    // Candidate family names across the CDNs; report the one ACTUALLY applied
+    // to the prose, which is what matters (a font can load but go unused if the
+    // CSS stack names it differently).
+    var families = ['"Computer Modern Serif"', '"CMU Serif"', '"CMU Serif Roman"',
+                    '"Latin Modern Roman"', '"Latin Modern Roman 10"', '"LM Roman 10"'];
     function report() {
-      var hit = null;
+      // What font is the body prose actually rendering in?
+      var applied = getComputedStyle(document.body).fontFamily;
+      // Which of our candidates did the browser successfully load?
+      var loaded = [];
       for (var i = 0; i < families.length; i++) {
-        try { if (document.fonts.check('16px ' + families[i])) { hit = families[i]; break; } }
+        try { if (document.fonts.check('16px ' + families[i])) loaded.push(families[i].replace(/"/g, "")); }
         catch (e) {}
       }
-      el.textContent = hit ? ("web font loaded: " + hit.replace(/"/g, ""))
-                           : "web font: FALLBACK (Georgia) — Computer Modern did not load";
-      el.className = hit ? "ok" : "bad";
+      var usingCM = /computer modern|cmu|latin modern|lm roman/i.test(applied.split(",")[0]);
+      el.textContent = "applied: " + applied.split(",")[0].replace(/"/g, "")
+                     + "  |  loaded: " + (loaded.join(", ") || "none");
+      el.className = usingCM ? "ok" : "bad";
     }
     if (document.fonts.ready) document.fonts.ready.then(report); else report();
   });
 </script>
-<link rel="stylesheet" href="style.css?v=15c62e02">
+<link rel="stylesheet" href="style.css?v=a0ba535d">
 <script>
   window.MathJax = {
     tex: {

@@ -28,7 +28,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  font-family: "Georgia", "Times New Roman", serif;
   font-size: 18px;
   line-height: 1.65;
 }

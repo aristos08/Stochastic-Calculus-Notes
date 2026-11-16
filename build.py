@@ -22,6 +22,7 @@ ignores the comment.
 import html
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -33,6 +34,9 @@ SITE_SUBTITLE = "ACTSC 969, University of Waterloo"
 # Chapters, in order. Add later chapters here as their .tex files arrive.
 CHAPTERS = [
     ("martingales", "01-martingales.tex"),
+    ("brownian-motion", "02-brownian-motion.tex"),
+    ("stochastic-integrals", "03-stochastic-integrals.tex"),
+    ("ito-integral-l2-martingales", "04-ito-integral-l2-martingales.tex"),
 ]
 
 THEOREM_ENVS = {
@@ -120,6 +124,8 @@ def find_env_end(s, name, start):
 def slugify(text):
     text = re.sub(r"\x00M\d+\x00", "", text)
     text = re.sub(r"<[^>]+>", "", text)
+    # Drop accents (Itô -> Ito) so slugs stay readable.
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
     text = re.sub(r"[^a-zA-Z0-9]+", "-", text).strip("-").lower()
     return text or "section"
 
@@ -189,6 +195,32 @@ class MathStore:
 
 # ---------------------------------------------------------- inline (text)
 
+ACCENTS = {"'": "\u0301", "`": "\u0300", "^": "\u0302", '"': "\u0308",
+           "~": "\u0303", "=": "\u0304", ".": "\u0307"}
+
+
+def plain_text(s):
+    """Plain-text version of a LaTeX title (for <title> tags and URL slugs).
+
+    Uses the second (PDF) argument of \\texorpdfstring and drops math/markup.
+    """
+    out, i = [], 0
+    while i < len(s):
+        if s.startswith("\\texorpdfstring", i):
+            j = skip_ws(s, i + len("\\texorpdfstring"))
+            _, j = read_group(s, j)
+            second, j = read_group(s, skip_ws(s, j))
+            out.append(second)
+            i = j
+        else:
+            out.append(s[i])
+            i += 1
+    text = convert_inline("".join(out))
+    text = re.sub(r"\x00M\d+\x00", "", text)
+    text = re.sub(r"<[^>]+>", "", text)
+    return html.unescape(text).strip()
+
+
 def convert_inline(s):
     """Convert text-mode LaTeX inside a paragraph to HTML."""
     out = []
@@ -199,6 +231,23 @@ def convert_inline(s):
             m = re.match(r"\\([a-zA-Z]+)\*?", s[i:])
             if not m:
                 nxt = s[i + 1] if i + 1 < len(s) else ""
+                if nxt in ACCENTS:
+                    # \^o, \'e, \"u, \^{o}, ...: combine the accent with the letter.
+                    k = i + 2
+                    if k < len(s) and s[k] == "{":
+                        letter, k = read_group(s, k)
+                    elif k < len(s):
+                        letter, k = s[k], k + 1
+                    else:
+                        letter = ""
+                    if len(letter) == 1 and letter.isalpha():
+                        out.append(html.escape(
+                            unicodedata.normalize("NFC", letter + ACCENTS[nxt]), quote=False))
+                    else:
+                        warn("Cannot apply accent \\%s to %r" % (nxt, letter))
+                        out.append(html.escape(letter, quote=False))
+                    i = k
+                    continue
                 if nxt == "\\":
                     out.append("<br>")
                 elif nxt in "%&$#_{} ":
@@ -220,6 +269,11 @@ def convert_inline(s):
             elif name == "texttt":
                 content, j = read_group(s, skip_ws(s, j))
                 out.append("<code>%s</code>" % convert_inline(content))
+            elif name == "texorpdfstring":
+                # \texorpdfstring{web/TeX version}{PDF version}: the page can show math.
+                first, j = read_group(s, skip_ws(s, j))
+                _, j = read_group(s, skip_ws(s, j))
+                out.append(convert_inline(first))
             elif name in ("label", "index"):
                 _, j = read_group(s, skip_ws(s, j))
             elif name in IGNORED_COMMANDS:
@@ -260,6 +314,7 @@ class Renderer:
         self.toc = []  # (level, id, html title)
         self.used_ids = set()
         self.chapter_title = None
+        self.chapter_title_plain = None
 
     def unique_id(self, base):
         cand = base
@@ -329,9 +384,10 @@ class Renderer:
         title_html = convert_inline(title)
         if level == "chapter":
             self.chapter_title = title_html
+            self.chapter_title_plain = plain_text(title)
             return ""
         tag = {"section": "h2", "subsection": "h3", "subsubsection": "h4"}[level]
-        hid = self.unique_id(slugify(title))
+        hid = self.unique_id(slugify(plain_text(title)))
         if level in ("section", "subsection"):
             self.toc.append((level, hid, title_html))
         return '<%s id="%s"><a class="anchor" href="#%s">%s</a></%s>' % (
@@ -528,8 +584,14 @@ def build():
         r = Renderer(num)
         body = r.render(s)
         title = r.chapter_title or slug.replace("-", " ").title()
+        plain = r.chapter_title_plain or title
+        # Restore math placeholders in titles/TOC NOW, using this chapter's own
+        # MathStore, so they can be shared safely with other pages (pager, index).
+        title = math.restore(title)
+        toc = [(lvl, hid, math.restore(t)) for lvl, hid, t in r.toc]
         rendered.append({"slug": slug, "num": num, "title": "%d. %s" % (num, title),
-                         "plain_title": title, "body": body, "math": math, "toc": r.toc})
+                         "html_title": title, "plain_title": plain,
+                         "body": body, "math": math, "toc": toc})
 
     for i, info in enumerate(rendered):
         prev_link = next_link = ""
@@ -540,10 +602,11 @@ def build():
             n = rendered[i + 1]
             next_link = '<a href="%s.html">%s &rarr;</a>' % (n["slug"], n["title"])
         pager = '<nav class="pager"><span>%s</span><span>%s</span></nav>' % (prev_link, next_link)
+        # Only the chapter body still holds placeholders; titles/TOC are already restored.
+        body = info["math"].restore(info["body"])
         body = ('<h1>Chapter %d<br><span class="chapter-name">%s</span></h1>\n%s\n%s'
-                % (info["num"], info["plain_title"], info["body"], pager))
-        body = info["math"].restore(body)
-        nav = info["math"].restore(toc_html(info["toc"], rendered, info["slug"]))
+                % (info["num"], info["html_title"], body, pager))
+        nav = toc_html(info["toc"], rendered, info["slug"])
         html_text = page("%s | %s" % (info["plain_title"], SITE_TITLE), body, nav, css_version)
         (OUT / ("%s.html" % info["slug"])).write_text(html_text)
 
@@ -559,7 +622,6 @@ def build():
                      % (info["slug"], info["title"], lec_links if lectures else ""))
     index_body = ("<h1>%s</h1>\n<p>Notes from %s.</p>\n<ol class=\"chapter-list\">\n%s\n</ol>"
                   % (SITE_TITLE, SITE_SUBTITLE, "\n".join(items)))
-    index_body = rendered[0]["math"].restore(index_body) if rendered else index_body
     (OUT / "index.html").write_text(page(SITE_TITLE, index_body, "", css_version))
 
     (OUT / "style.css").write_text(css_text)

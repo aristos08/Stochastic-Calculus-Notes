@@ -2018,3 +2018,36 @@ For a right-continuous martingale,
 Uniform integrability is therefore the key
 additional condition that upgrades almost-sure
 martingale convergence to $L^1$ convergence.
+
+
+\section{Lecture 8: Optional Sampling and Brownian Motion}
+
+\subsection*{A final optional-sampling consequence}
+\begin{corollary}
+Let $(X_t)_{t\in T}$ be a martingale, where $T=\mathbb{N}_0$ or
+$T=[0,\infty)$. Let $\tau$ be a stopping time taking values in
+$\overline{\mathbb{N}}_0$ or $\overline{\mathbb{R}}_+$, respectively.
+Suppose that there is a constant $c$ such that
+\[
+ |X_{t\wedge\tau}|\le c\qquad\text{almost surely for every }t\in T.
+\]
+Then the limit
+\[
+ X_\tau:=\lim_{t\to\infty}X_{t\wedge\tau}
+\]
+exists almost surely and
+\[
+ \mathbb{E}[X_\tau]=\mathbb{E}[X_0].
+\]
+\end{corollary}
+\begin{proof}
+The stopped process $X^\tau=(X_{t\wedge\tau})_{t\in T}$ is a bounded
+martingale, hence uniformly integrable. The martingale convergence theorem
+therefore gives almost sure and $L^1$ convergence to a limit $X_\tau$.
+Optional sampling gives
+\[
+ \mathbb{E}[X_{t\wedge\tau}]=\mathbb{E}[X_0]
+\]
+for every $t$. Taking $t\to\infty$ and using $L^1$ convergence proves the
+claim.
+\end{proof}

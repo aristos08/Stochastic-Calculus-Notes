@@ -476,48 +476,64 @@ def mathjax_config():
 
 # Computer Modern prose, to match the MathJax equations.
 #
-# We link the vsalvino/computer-modern project's OWN stylesheet from jsDelivr
-# (a project built specifically to serve CM web fonts over a public CDN). By
-# linking its CSS -- rather than hand-writing woff2 filenames, which is what
-# failed before -- the browser resolves the correct font-file paths itself.
-# That stylesheet declares the family "Computer Modern Serif", which the CSS
-# font stack references. Falls back to Georgia if the CDN is unreachable.
+# We declare the @font-face rules ourselves, under our own family name
+# "CMProse", so the CSS can never disagree with the font's registered name.
+# Each face lists several sources; the browser tries them in order and uses the
+# first that downloads:
+#   1. Computer Modern Unicode (cmunrm/ti/bx/bi) from the vsalvino repo on jsDelivr
+#   2. MathJax's own Computer Modern files from jsDelivr (the same files that draw
+#      the equations, so they are known to be reachable from the reader's browser)
+# If everything fails the page falls back to Georgia.
 #
-# The #font-probe span reports on the page whether the web font actually
-# loaded, and the probe tries BOTH common family names so a rename can't give a
-# false negative.
+# #font-probe reports what really happened: the load status of each CMProse face
+# and which font files were requested. (document.fonts.check() is NOT used: it
+# returns true for unknown family names, which made the earlier probe misleading.)
+_VS = "https://cdn.jsdelivr.net/gh/vsalvino/computer-modern@main/fonts/Serif"
+_MJ = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2"
 FONT_LINK = """<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/vsalvino/computer-modern@main/fonts/Serif/cmun-serif.css">
-<link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@fontsource/cmu-serif@5.2.6/index.css">
+<style>
+  @font-face { font-family: "CMProse"; font-style: normal; font-weight: 400; font-display: swap;
+    src: url("%(vs)s/cmunrm.woff2") format("woff2"),
+         url("%(mj)s/MathJax_Main-Regular.woff") format("woff"); }
+  @font-face { font-family: "CMProse"; font-style: italic; font-weight: 400; font-display: swap;
+    src: url("%(vs)s/cmunti.woff2") format("woff2"),
+         url("%(mj)s/MathJax_Main-Italic.woff") format("woff"); }
+  @font-face { font-family: "CMProse"; font-style: normal; font-weight: 700; font-display: swap;
+    src: url("%(vs)s/cmunbx.woff2") format("woff2"),
+         url("%(mj)s/MathJax_Main-Bold.woff") format("woff"); }
+  @font-face { font-family: "CMProse"; font-style: italic; font-weight: 700; font-display: swap;
+    src: url("%(vs)s/cmunbi.woff2") format("woff2"),
+         url("%(mj)s/MathJax_Main-BoldItalic.woff") format("woff"); }
+</style>
 <script>
-  // Report on the page whether a Computer Modern web font loaded.
   document.addEventListener("DOMContentLoaded", function () {
     var el = document.getElementById("font-probe");
-    if (!el || !document.fonts || !document.fonts.check) return;
-    // Candidate family names across the CDNs; report the one ACTUALLY applied
-    // to the prose, which is what matters (a font can load but go unused if the
-    // CSS stack names it differently).
-    var families = ['"Computer Modern Serif"', '"CMU Serif"', '"CMU Serif Roman"',
-                    '"Latin Modern Roman"', '"Latin Modern Roman 10"', '"LM Roman 10"'];
+    if (!el || !document.fonts) return;
     function report() {
-      // What font is the body prose actually rendering in?
-      var applied = getComputedStyle(document.body).fontFamily;
-      // Which of our candidates did the browser successfully load?
-      var loaded = [];
-      for (var i = 0; i < families.length; i++) {
-        try { if (document.fonts.check('16px ' + families[i])) loaded.push(families[i].replace(/"/g, "")); }
-        catch (e) {}
-      }
-      var usingCM = /computer modern|cmu|latin modern|lm roman/i.test(applied.split(",")[0]);
-      el.textContent = "applied: " + applied.split(",")[0].replace(/"/g, "")
-                     + "  |  loaded: " + (loaded.join(", ") || "none");
-      el.className = usingCM ? "ok" : "bad";
+      // Real status of each @font-face we declared.
+      var faces = [];
+      document.fonts.forEach(function (f) {
+        if (f.family.replace(/"/g, "") === "CMProse") faces.push(f.style + "/" + f.weight + ":" + f.status);
+      });
+      // Which font files were actually requested, with HTTP status when exposed.
+      var files = performance.getEntriesByType("resource")
+        .filter(function (r) { return /\.(woff2?|ttf|otf)(\?|$)/.test(r.name); })
+        .map(function (r) {
+          var n = r.name.split("/").pop();
+          var host = /vsalvino/.test(r.name) ? "CM" : (/MathJax_/.test(r.name) ? "MJ" : "?");
+          return host + ":" + n + (r.responseStatus ? " " + r.responseStatus : "");
+        });
+      var ok = faces.some(function (x) { return /:loaded$/.test(x); });
+      el.textContent = (ok ? "CMProse OK" : "CMProse NOT loaded") + " | " + faces.join(", ")
+                       + " | files: " + (files.join("; ") || "none");
+      el.className = ok ? "ok" : "bad";
     }
-    if (document.fonts.ready) document.fonts.ready.then(report); else report();
+    // Force the browser to fetch the regular face now, then report.
+    var p = document.fonts.load('16px "CMProse"');
+    Promise.resolve(p).then(report, report);
+    setTimeout(report, 4000);
   });
-</script>"""
+</script>"""  % {"vs": _VS, "mj": _MJ}
 
 
 def page(title, body, nav_html="", css_version=""):

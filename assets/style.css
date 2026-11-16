@@ -18,13 +18,10 @@
 
   --content-w: 820px;
 
-  /* Computer Modern web font, linked in each page's <head> (vsalvino + fontsource
-     CDNs). We list every family name those packages might register, so whichever
-     one the browser loaded is actually used. Falls back to Georgia if none load. */
-  --serif: "Computer Modern Serif", "CMU Serif", "CMU Serif Roman",
-           "Latin Modern Roman", "Latin Modern Roman 10", "LM Roman 10",
-           Georgia, "Times New Roman", serif;
-  --ui: "Computer Modern Serif", "CMU Serif", "Latin Modern Roman", Georgia, serif;
+  /* "CMProse" is declared with @font-face in each page's <head> (Computer Modern,
+     with MathJax's CM files as a backup source). Falls back to Georgia. */
+  --serif: "CMProse", Georgia, "Times New Roman", serif;
+  --ui: "CMProse", Georgia, serif;
 }
 
 * { box-sizing: border-box; }
@@ -94,12 +91,13 @@ a:hover { text-decoration: underline; }
 
 /* temporary web-font load indicator (remove once confirmed) */
 #font-probe {
-  margin-left: auto;
+  flex: 1 1 100%;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
   font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
+  line-height: 1.4;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  word-break: break-all;
 }
 #font-probe.ok  { color: #1f6d33; background: #e6f4ea; }
 #font-probe.bad { color: #9a2a1e; background: #fbe7e4; }

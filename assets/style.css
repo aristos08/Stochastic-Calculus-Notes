@@ -1,13 +1,13 @@
 /* Stochastic Calculus Notes: site stylesheet */
 
 :root {
-  --ink: #1f2430;
-  --muted: #5b6475;
-  --bg: #fbfaf7;
+  --ink: #1a1a1a;
+  --muted: #5e5e5e;
+  --bg: #ffffff;
   --panel: #ffffff;
-  --rule: #e4e1d8;
-  --accent: #3b4cca;        /* links, headings */
-  --accent-soft: #eef0ff;
+  --rule: #e1e1e1;
+  --accent: #222222;        /* links, headings */
+  --accent-soft: #ededed;
 
   --def: #2a7fbf;   --def-bg: #eef6fc;     /* definitions: blue */
   --thm: #7b3fbf;   --thm-bg: #f5effc;     /* theorems: purple */
@@ -16,21 +16,26 @@
   --ex: #3f8f3a;    --ex-bg: #f0f8ee;      /* examples: green */
   --rem: #a07a10;   --rem-bg: #fcf7e8;     /* remarks: amber */
 
-  --sidebar-w: 270px;
-  --content-w: 760px;
+  --content-w: 820px;
+
+  /* Latin Modern / Computer Modern loaded via the font CDN links in each page;
+     the stack falls back to a serif if the web font is unavailable. */
+  --serif: "Latin Modern Roman", "CMU Serif", "Computer Modern Serif",
+           "Latin Modern Math", Georgia, "Times New Roman", serif;
+  --ui: "Latin Modern Roman", "CMU Serif", Georgia, serif;
 }
 
 * { box-sizing: border-box; }
 
-html { scroll-padding-top: 80px; }
+html { scroll-padding-top: 130px; }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 18px;
-  line-height: 1.65;
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.6;
 }
 
 a { color: var(--accent); text-decoration: none; }
@@ -38,72 +43,65 @@ a:hover { text-decoration: underline; }
 
 /* ---------- header ---------- */
 .site-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   display: flex;
   align-items: baseline;
   gap: 1rem;
   flex-wrap: wrap;
-  padding: 0.85rem 1.5rem;
-  background: linear-gradient(90deg, #2b3a9f 0%, #5a3fb0 55%, #8a3fa8 100%);
+  padding: 0.85rem 1.8rem;
+  background: linear-gradient(90deg, #111111 0%, #3a3a3a 60%, #595959 100%);
   color: #fff;
-  box-shadow: 0 2px 10px rgba(40, 30, 90, 0.18);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  font-family: var(--ui);
 }
-.site-title { color: #fff; font-weight: 700; font-size: 1.15rem; letter-spacing: 0.01em; }
-.site-title:hover { text-decoration: none; opacity: 0.9; }
-.site-subtitle { color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; }
+.site-title { color: #fff; font-weight: 700; font-size: 1.2rem; letter-spacing: 0.01em; }
+.site-title:hover { text-decoration: none; opacity: 0.85; }
+.site-subtitle { color: rgba(255, 255, 255, 0.78); font-size: 0.95rem; }
 
-/* ---------- layout ---------- */
-.layout {
-  display: flex;
-  justify-content: center;
-  gap: 2.5rem;
-  padding: 2rem 1.5rem 4rem;
-}
-main { width: 100%; max-width: var(--content-w); min-width: 0; }
-
-/* ---------- sidebar contents ---------- */
+/* ---------- top nav (contents) ---------- */
 .toc {
-  flex: 0 0 var(--sidebar-w);
   position: sticky;
-  top: 80px;
-  align-self: flex-start;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
-  padding: 1rem 1.1rem;
-  background: var(--panel);
-  border: 1px solid var(--rule);
-  border-radius: 10px;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 0.88rem;
-  line-height: 1.45;
+  top: 0;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.55rem 1.8rem;
+  background: #fafafa;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--ui);
+  font-size: 0.95rem;
 }
 .toc-title {
-  margin: 0 0 0.5rem;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--muted);
+  white-space: nowrap;
 }
-.toc ol, .toc ul { list-style: none; margin: 0; padding: 0; }
-.toc > ol > li { margin: 0.2rem 0; }
-.toc > ol > li > a { display: block; padding: 0.25rem 0.5rem; border-radius: 6px; color: var(--ink); }
-.toc > ol > li.current > a { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.toc ul { margin: 0.3rem 0 0.4rem 0.7rem; border-left: 2px solid var(--rule); }
-.toc ul li a { display: block; padding: 0.15rem 0 0.15rem 0.7rem; color: var(--muted); }
-.toc ul li a:hover { color: var(--accent); text-decoration: none; }
-.toc ul ul { margin: 0.1rem 0 0.2rem 0.6rem; border-left: none; font-size: 0.82rem; }
+.toc-links { display: flex; flex-wrap: wrap; gap: 0.3rem 0.5rem; }
+.toc-links a {
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  color: var(--ink);
+  background: #efefef;
+  border: 1px solid #e2e2e2;
+}
+.toc-links a:hover { background: var(--accent); color: #fff; text-decoration: none; }
+
+/* ---------- main column ---------- */
+main {
+  width: 100%;
+  max-width: var(--content-w);
+  margin: 0 auto;
+  padding: 2.2rem 1.8rem 5rem;
+}
 
 /* ---------- headings ---------- */
-h1, h2, h3, h4 {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.25;
-}
+h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.2; }
 h1 {
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.6rem;
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -112,11 +110,12 @@ h1 {
 }
 h1 .chapter-name {
   display: inline-block;
-  margin-top: 0.3rem;
-  font-size: 2.3rem;
+  margin-top: 0.35rem;
+  font-size: 2.6rem;
+  font-weight: 700;
   text-transform: none;
   letter-spacing: 0;
-  background: linear-gradient(90deg, #2b3a9f, #8a3fa8);
+  background: linear-gradient(90deg, #111111, #666666);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -124,16 +123,17 @@ h1 .chapter-name {
 h2 {
   margin: 3rem 0 1rem;
   padding-bottom: 0.4rem;
-  font-size: 1.6rem;
-  color: var(--accent);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--ink);
   border-bottom: 2px solid var(--accent-soft);
 }
-h3 { margin: 2.2rem 0 0.8rem; font-size: 1.25rem; color: #3a3f8f; }
-h4 { margin: 1.6rem 0 0.5rem; font-size: 1.05rem; }
+h3 { margin: 2.2rem 0 0.8rem; font-size: 1.45rem; font-weight: 700; color: #333; }
+h4 { margin: 1.6rem 0 0.5rem; font-size: 1.15rem; font-weight: 700; }
 h2 a.anchor, h3 a.anchor, h4 a.anchor { color: inherit; }
 h2 a.anchor:hover, h3 a.anchor:hover { text-decoration: none; }
 
-.run-in { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #3a3f8f; }
+.run-in { font-weight: 700; color: #333; }
 
 p { margin: 0.8rem 0; }
 
@@ -141,8 +141,8 @@ p { margin: 0.8rem 0; }
 .thm {
   --c: var(--thm);
   --cbg: var(--thm-bg);
-  margin: 1.6rem 0;
-  padding: 0.9rem 1.2rem 0.6rem;
+  margin: 1.7rem 0;
+  padding: 1rem 1.3rem 0.7rem;
   background: var(--cbg);
   border-left: 4px solid var(--c);
   border-radius: 0 8px 8px 0;
@@ -155,12 +155,13 @@ p { margin: 0.8rem 0; }
 .thm-remark, .thm-exercise { --c: var(--rem); --cbg: var(--rem-bg); }
 
 .thm-head {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 0.95rem;
+  font-family: var(--ui);
+  font-size: 1.2rem;
+  margin-bottom: 0.2rem;
   color: var(--c);
 }
 .thm-name { color: var(--c); font-weight: 700; }
-.thm-title { font-weight: 600; }
+.thm-title { font-weight: 700; }
 .thm > p:first-of-type { margin-top: 0.4rem; }
 .thm-theorem p, .thm-proposition p, .thm-lemma p, .thm-corollary p { font-style: italic; }
 
@@ -172,9 +173,8 @@ p { margin: 0.8rem 0; }
   border-left: 2px dashed var(--rule);
 }
 .proof-label {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--muted);
 }
 .proof > .proof-label + p { display: inline; }
@@ -185,7 +185,7 @@ ol, ul { padding-left: 1.6rem; }
 li { margin: 0.35rem 0; }
 ol.labeled { list-style: none; padding-left: 0.4rem; }
 ol.labeled > li { display: flex; gap: 0.6rem; }
-ol.labeled > li > .item-label { flex: 0 0 auto; min-width: 2rem; font-weight: 600; color: var(--muted); }
+ol.labeled > li > .item-label { flex: 0 0 auto; min-width: 2rem; font-weight: 700; color: var(--muted); }
 ol.labeled > li > div { flex: 1; min-width: 0; }
 
 /* ---------- math ---------- */
@@ -207,7 +207,7 @@ figure {
 figure svg { max-width: 100%; height: auto; }
 figcaption {
   margin-top: 0.6rem;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   color: var(--muted);
   text-align: left;
 }
@@ -221,11 +221,11 @@ figcaption strong { color: var(--ink); }
   margin-top: 4rem;
   padding-top: 1.2rem;
   border-top: 1px solid var(--rule);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--ui);
 }
 
 /* ---------- index page ---------- */
-.chapter-list { list-style: none; padding: 0; counter-reset: none; }
+.chapter-list { list-style: none; padding: 0; }
 .chapter-list > li {
   margin: 1rem 0;
   padding: 1.1rem 1.3rem;
@@ -233,17 +233,16 @@ figcaption strong { color: var(--ink); }
   border: 1px solid var(--rule);
   border-left: 4px solid var(--accent);
   border-radius: 0 10px 10px 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
-.chapter-link { font-size: 1.2rem; font-weight: 700; }
-.lectures { margin-top: 0.3rem; font-size: 0.9rem; color: var(--muted); }
+.chapter-link { font-size: 1.3rem; font-weight: 700; }
+.lectures { margin-top: 0.3rem; font-size: 0.95rem; color: var(--muted); }
 .lectures a { color: var(--muted); }
 .lectures a:hover { color: var(--accent); }
 
 /* ---------- small screens ---------- */
-@media (max-width: 1000px) {
-  .layout { flex-direction: column; align-items: center; gap: 1.2rem; padding-top: 1.2rem; }
-  .toc { position: static; width: 100%; max-width: var(--content-w); max-height: none; flex: none; }
-  body { font-size: 17px; }
-  h1 .chapter-name { font-size: 1.9rem; }
+@media (max-width: 720px) {
+  body { font-size: 18px; }
+  main { padding: 1.6rem 1.1rem 4rem; }
+  h1 .chapter-name { font-size: 2rem; }
+  h2 { font-size: 1.6rem; }
 }

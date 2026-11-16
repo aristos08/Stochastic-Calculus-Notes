@@ -474,14 +474,28 @@ def mathjax_config():
 
 # ---------------------------------------------------------------- pages
 
-def page(title, body, nav_html=""):
+# CMU Serif is the web-font form of Computer Modern, so the prose matches the
+# MathJax equations. Loaded from the jsDelivr CDN (the @fontsource package).
+# The CSS stack falls back to Georgia if this fails to load.
+# NOTE: @fontsource/cmu-serif defines the family name "CMU Serif".
+FONT_LINK = ('<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>\n'
+             '<link rel="stylesheet" '
+             'href="https://cdn.jsdelivr.net/npm/@fontsource/cmu-serif@5.2.6/400.css">\n'
+             '<link rel="stylesheet" '
+             'href="https://cdn.jsdelivr.net/npm/@fontsource/cmu-serif@5.2.6/400-italic.css">\n'
+             '<link rel="stylesheet" '
+             'href="https://cdn.jsdelivr.net/npm/@fontsource/cmu-serif@5.2.6/700.css">')
+
+
+def page(title, body, nav_html="", css_version=""):
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s</title>
-<link rel="stylesheet" href="style.css">
+%s
+<link rel="stylesheet" href="style.css%s">
 %s
 </head>
 <body>
@@ -489,46 +503,37 @@ def page(title, body, nav_html=""):
   <a class="site-title" href="index.html">%s</a>
   <span class="site-subtitle">%s</span>
 </header>
-<div class="layout">
 %s
 <main>
 %s
 </main>
-</div>
 </body>
 </html>
-""" % (title, mathjax_config(), SITE_TITLE, SITE_SUBTITLE, nav_html, body)
+""" % (title, FONT_LINK, css_version, mathjax_config(), SITE_TITLE, SITE_SUBTITLE,
+       nav_html, body)
 
 
 def toc_html(toc, chapters_info, current_slug):
-    lines = ['<nav class="toc" aria-label="Contents">', '<p class="toc-title">Chapters</p>', "<ol>"]
-    for info in chapters_info:
-        cls = ' class="current"' if info["slug"] == current_slug else ""
-        lines.append('<li%s><a href="%s.html">%s</a>' % (cls, info["slug"], info["title"]))
-        if info["slug"] == current_slug and toc:
-            lines.append("<ul>")
-            open_sub = False
-            for level, hid, title in toc:
-                if level == "section":
-                    if open_sub:
-                        lines.append("</ul></li>")
-                        open_sub = False
-                    lines.append('<li><a href="#%s">%s</a>' % (hid, title))
-                    lines.append("<ul>")
-                    open_sub = True
-                elif open_sub:
-                    lines.append('<li class="sub"><a href="#%s">%s</a></li>' % (hid, title))
-            if open_sub:
-                lines.append("</ul></li>")
-            lines.append("</ul>")
-        lines.append("</li>")
-    lines += ["</ol>", "</nav>"]
-    # Remove empty <ul></ul> left by sections without subsections
-    return re.sub(r"<ul>\s*</ul>", "", "\n".join(lines))
+    """Horizontal top bar: current chapter's lecture (section) links only."""
+    current = next((c for c in chapters_info if c["slug"] == current_slug), None)
+    section_links = [
+        '<a href="#%s">%s</a>' % (hid, title)
+        for level, hid, title in toc if level == "section"
+    ]
+    if not section_links:
+        return ""
+    label = current["title"] if current else "Contents"
+    return ('<nav class="toc" aria-label="On this page">\n'
+            '<span class="toc-title">%s</span>\n'
+            '<div class="toc-links">%s</div>\n'
+            '</nav>') % (label, "\n".join(section_links))
 
 
 def build():
     OUT.mkdir(exist_ok=True)
+    css_text = (ROOT / "assets" / "style.css").read_text()
+    import hashlib
+    css_version = "?v=" + hashlib.sha1(css_text.encode()).hexdigest()[:8]
     rendered = []
     for num, (slug, filename) in enumerate(CHAPTERS, start=1):
         tex = (SRC / filename).read_text()
@@ -553,7 +558,7 @@ def build():
                 % (info["num"], info["plain_title"], info["body"], pager))
         body = info["math"].restore(body)
         nav = info["math"].restore(toc_html(info["toc"], rendered, info["slug"]))
-        html_text = page("%s | %s" % (info["plain_title"], SITE_TITLE), body, nav)
+        html_text = page("%s | %s" % (info["plain_title"], SITE_TITLE), body, nav, css_version)
         (OUT / ("%s.html" % info["slug"])).write_text(html_text)
 
     # Index page
@@ -569,9 +574,9 @@ def build():
     index_body = ("<h1>%s</h1>\n<p>Notes from %s.</p>\n<ol class=\"chapter-list\">\n%s\n</ol>"
                   % (SITE_TITLE, SITE_SUBTITLE, "\n".join(items)))
     index_body = rendered[0]["math"].restore(index_body) if rendered else index_body
-    (OUT / "index.html").write_text(page(SITE_TITLE, index_body))
+    (OUT / "index.html").write_text(page(SITE_TITLE, index_body, "", css_version))
 
-    (OUT / "style.css").write_text((ROOT / "assets" / "style.css").read_text())
+    (OUT / "style.css").write_text(css_text)
     (OUT / ".nojekyll").write_text("")
 
     for w in sorted(set(warnings)):

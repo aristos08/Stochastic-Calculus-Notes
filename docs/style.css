@@ -18,10 +18,8 @@
 
   --content-w: 820px;
 
-  /* "CMProse" is declared with @font-face in each page's <head> (Computer Modern,
-     with MathJax's CM files as a backup source). Falls back to Georgia. */
-  --serif: "CMProse", Georgia, "Times New Roman", serif;
-  --ui: "CMProse", Georgia, serif;
+  --serif: "Georgia", "Times New Roman", serif;
+  --ui: "Georgia", "Times New Roman", serif;
 }
 
 * { box-sizing: border-box; }
@@ -88,19 +86,6 @@ a:hover { text-decoration: underline; }
   border: 1px solid #e2e2e2;
 }
 .toc-links a:hover { background: var(--accent); color: #fff; text-decoration: none; }
-
-/* temporary web-font load indicator (remove once confirmed) */
-#font-probe {
-  flex: 1 1 100%;
-  font-family: ui-monospace, Menlo, Consolas, monospace;
-  font-size: 0.72rem;
-  line-height: 1.4;
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
-  word-break: break-all;
-}
-#font-probe.ok  { color: #1f6d33; background: #e6f4ea; }
-#font-probe.bad { color: #9a2a1e; background: #fbe7e4; }
 
 /* ---------- main column ---------- */
 main {

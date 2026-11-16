@@ -4,51 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stochastic Calculus Notes</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<style>
-  @font-face { font-family: "CMProse"; font-style: normal; font-weight: 400; font-display: swap;
-    src: url("https://cdn.jsdelivr.net/gh/vsalvino/computer-modern@main/fonts/Serif/cmunrm.woff2") format("woff2"),
-         url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff"); }
-  @font-face { font-family: "CMProse"; font-style: italic; font-weight: 400; font-display: swap;
-    src: url("https://cdn.jsdelivr.net/gh/vsalvino/computer-modern@main/fonts/Serif/cmunti.woff2") format("woff2"),
-         url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff"); }
-  @font-face { font-family: "CMProse"; font-style: normal; font-weight: 700; font-display: swap;
-    src: url("https://cdn.jsdelivr.net/gh/vsalvino/computer-modern@main/fonts/Serif/cmunbx.woff2") format("woff2"),
-         url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff"); }
-  @font-face { font-family: "CMProse"; font-style: italic; font-weight: 700; font-display: swap;
-    src: url("https://cdn.jsdelivr.net/gh/vsalvino/computer-modern@main/fonts/Serif/cmunbi.woff2") format("woff2"),
-         url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-BoldItalic.woff") format("woff"); }
-</style>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var el = document.getElementById("font-probe");
-    if (!el || !document.fonts) return;
-    function report() {
-      // Real status of each @font-face we declared.
-      var faces = [];
-      document.fonts.forEach(function (f) {
-        if (f.family.replace(/"/g, "") === "CMProse") faces.push(f.style + "/" + f.weight + ":" + f.status);
-      });
-      // Which font files were actually requested, with HTTP status when exposed.
-      var files = performance.getEntriesByType("resource")
-        .filter(function (r) { return /\.(woff2?|ttf|otf)(\?|$)/.test(r.name); })
-        .map(function (r) {
-          var n = r.name.split("/").pop();
-          var host = /vsalvino/.test(r.name) ? "CM" : (/MathJax_/.test(r.name) ? "MJ" : "?");
-          return host + ":" + n + (r.responseStatus ? " " + r.responseStatus : "");
-        });
-      var ok = faces.some(function (x) { return /:loaded$/.test(x); });
-      el.textContent = (ok ? "CMProse OK" : "CMProse NOT loaded") + " | " + faces.join(", ")
-                       + " | files: " + (files.join("; ") || "none");
-      el.className = ok ? "ok" : "bad";
-    }
-    // Force the browser to fetch the regular face now, then report.
-    var p = document.fonts.load('16px "CMProse"');
-    Promise.resolve(p).then(report, report);
-    setTimeout(report, 4000);
-  });
-</script>
-<link rel="stylesheet" href="style.css?v=6bad9ad9">
+<link rel="stylesheet" href="style.css?v=77b160bf">
 <script>
   window.MathJax = {
     tex: {

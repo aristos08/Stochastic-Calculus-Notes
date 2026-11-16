@@ -474,68 +474,6 @@ def mathjax_config():
 
 # ---------------------------------------------------------------- pages
 
-# Computer Modern prose, to match the MathJax equations.
-#
-# We declare the @font-face rules ourselves, under our own family name
-# "CMProse", so the CSS can never disagree with the font's registered name.
-# Each face lists several sources; the browser tries them in order and uses the
-# first that downloads:
-#   1. Computer Modern Unicode (cmunrm/ti/bx/bi) from the vsalvino repo on jsDelivr
-#   2. MathJax's own Computer Modern files from jsDelivr (the same files that draw
-#      the equations, so they are known to be reachable from the reader's browser)
-# If everything fails the page falls back to Georgia.
-#
-# #font-probe reports what really happened: the load status of each CMProse face
-# and which font files were requested. (document.fonts.check() is NOT used: it
-# returns true for unknown family names, which made the earlier probe misleading.)
-_VS = "https://cdn.jsdelivr.net/gh/vsalvino/computer-modern@main/fonts/Serif"
-_MJ = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2"
-FONT_LINK = """<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<style>
-  @font-face { font-family: "CMProse"; font-style: normal; font-weight: 400; font-display: swap;
-    src: url("%(vs)s/cmunrm.woff2") format("woff2"),
-         url("%(mj)s/MathJax_Main-Regular.woff") format("woff"); }
-  @font-face { font-family: "CMProse"; font-style: italic; font-weight: 400; font-display: swap;
-    src: url("%(vs)s/cmunti.woff2") format("woff2"),
-         url("%(mj)s/MathJax_Main-Italic.woff") format("woff"); }
-  @font-face { font-family: "CMProse"; font-style: normal; font-weight: 700; font-display: swap;
-    src: url("%(vs)s/cmunbx.woff2") format("woff2"),
-         url("%(mj)s/MathJax_Main-Bold.woff") format("woff"); }
-  @font-face { font-family: "CMProse"; font-style: italic; font-weight: 700; font-display: swap;
-    src: url("%(vs)s/cmunbi.woff2") format("woff2"),
-         url("%(mj)s/MathJax_Main-BoldItalic.woff") format("woff"); }
-</style>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var el = document.getElementById("font-probe");
-    if (!el || !document.fonts) return;
-    function report() {
-      // Real status of each @font-face we declared.
-      var faces = [];
-      document.fonts.forEach(function (f) {
-        if (f.family.replace(/"/g, "") === "CMProse") faces.push(f.style + "/" + f.weight + ":" + f.status);
-      });
-      // Which font files were actually requested, with HTTP status when exposed.
-      var files = performance.getEntriesByType("resource")
-        .filter(function (r) { return /\.(woff2?|ttf|otf)(\?|$)/.test(r.name); })
-        .map(function (r) {
-          var n = r.name.split("/").pop();
-          var host = /vsalvino/.test(r.name) ? "CM" : (/MathJax_/.test(r.name) ? "MJ" : "?");
-          return host + ":" + n + (r.responseStatus ? " " + r.responseStatus : "");
-        });
-      var ok = faces.some(function (x) { return /:loaded$/.test(x); });
-      el.textContent = (ok ? "CMProse OK" : "CMProse NOT loaded") + " | " + faces.join(", ")
-                       + " | files: " + (files.join("; ") || "none");
-      el.className = ok ? "ok" : "bad";
-    }
-    // Force the browser to fetch the regular face now, then report.
-    var p = document.fonts.load('16px "CMProse"');
-    Promise.resolve(p).then(report, report);
-    setTimeout(report, 4000);
-  });
-</script>"""  % {"vs": _VS, "mj": _MJ}
-
-
 def page(title, body, nav_html="", css_version=""):
     return """<!DOCTYPE html>
 <html lang="en">
@@ -543,7 +481,6 @@ def page(title, body, nav_html="", css_version=""):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s</title>
-%s
 <link rel="stylesheet" href="style.css%s">
 %s
 </head>
@@ -558,7 +495,7 @@ def page(title, body, nav_html="", css_version=""):
 </main>
 </body>
 </html>
-""" % (title, FONT_LINK, css_version, mathjax_config(), SITE_TITLE, SITE_SUBTITLE,
+""" % (title, css_version, mathjax_config(), SITE_TITLE, SITE_SUBTITLE,
        nav_html, body)
 
 
@@ -575,7 +512,6 @@ def toc_html(toc, chapters_info, current_slug):
     return ('<nav class="toc" aria-label="On this page">\n'
             '<span class="toc-title">%s</span>\n'
             '<div class="toc-links">%s</div>\n'
-            '<span id="font-probe">checking font\u2026</span>\n'
             '</nav>') % (label, "\n".join(section_links))
 
 

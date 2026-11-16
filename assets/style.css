@@ -1,0 +1,249 @@
+/* Stochastic Calculus Notes: site stylesheet */
+
+:root {
+  --ink: #1f2430;
+  --muted: #5b6475;
+  --bg: #fbfaf7;
+  --panel: #ffffff;
+  --rule: #e4e1d8;
+  --accent: #3b4cca;        /* links, headings */
+  --accent-soft: #eef0ff;
+
+  --def: #2a7fbf;   --def-bg: #eef6fc;     /* definitions: blue */
+  --thm: #7b3fbf;   --thm-bg: #f5effc;     /* theorems: purple */
+  --prop: #c0563a;  --prop-bg: #fdf2ee;    /* propositions: terracotta */
+  --lem: #1f8a7a;   --lem-bg: #ecf8f5;     /* lemmas & corollaries: teal */
+  --ex: #3f8f3a;    --ex-bg: #f0f8ee;      /* examples: green */
+  --rem: #a07a10;   --rem-bg: #fcf7e8;     /* remarks: amber */
+
+  --sidebar-w: 270px;
+  --content-w: 760px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-padding-top: 80px; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- header ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(90deg, #2b3a9f 0%, #5a3fb0 55%, #8a3fa8 100%);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(40, 30, 90, 0.18);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.site-title { color: #fff; font-weight: 700; font-size: 1.15rem; letter-spacing: 0.01em; }
+.site-title:hover { text-decoration: none; opacity: 0.9; }
+.site-subtitle { color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; }
+
+/* ---------- layout ---------- */
+.layout {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  padding: 2rem 1.5rem 4rem;
+}
+main { width: 100%; max-width: var(--content-w); min-width: 0; }
+
+/* ---------- sidebar contents ---------- */
+.toc {
+  flex: 0 0 var(--sidebar-w);
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding: 1rem 1.1rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+.toc-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.toc ol, .toc ul { list-style: none; margin: 0; padding: 0; }
+.toc > ol > li { margin: 0.2rem 0; }
+.toc > ol > li > a { display: block; padding: 0.25rem 0.5rem; border-radius: 6px; color: var(--ink); }
+.toc > ol > li.current > a { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.toc ul { margin: 0.3rem 0 0.4rem 0.7rem; border-left: 2px solid var(--rule); }
+.toc ul li a { display: block; padding: 0.15rem 0 0.15rem 0.7rem; color: var(--muted); }
+.toc ul li a:hover { color: var(--accent); text-decoration: none; }
+.toc ul ul { margin: 0.1rem 0 0.2rem 0.6rem; border-left: none; font-size: 0.82rem; }
+
+/* ---------- headings ---------- */
+h1, h2, h3, h4 {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.25;
+}
+h1 {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+h1 .chapter-name {
+  display: inline-block;
+  margin-top: 0.3rem;
+  font-size: 2.3rem;
+  text-transform: none;
+  letter-spacing: 0;
+  background: linear-gradient(90deg, #2b3a9f, #8a3fa8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+h2 {
+  margin: 3rem 0 1rem;
+  padding-bottom: 0.4rem;
+  font-size: 1.6rem;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent-soft);
+}
+h3 { margin: 2.2rem 0 0.8rem; font-size: 1.25rem; color: #3a3f8f; }
+h4 { margin: 1.6rem 0 0.5rem; font-size: 1.05rem; }
+h2 a.anchor, h3 a.anchor, h4 a.anchor { color: inherit; }
+h2 a.anchor:hover, h3 a.anchor:hover { text-decoration: none; }
+
+.run-in { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #3a3f8f; }
+
+p { margin: 0.8rem 0; }
+
+/* ---------- theorem-like boxes ---------- */
+.thm {
+  --c: var(--thm);
+  --cbg: var(--thm-bg);
+  margin: 1.6rem 0;
+  padding: 0.9rem 1.2rem 0.6rem;
+  background: var(--cbg);
+  border-left: 4px solid var(--c);
+  border-radius: 0 8px 8px 0;
+}
+.thm-definition  { --c: var(--def);  --cbg: var(--def-bg); }
+.thm-theorem     { --c: var(--thm);  --cbg: var(--thm-bg); }
+.thm-proposition { --c: var(--prop); --cbg: var(--prop-bg); }
+.thm-lemma, .thm-corollary { --c: var(--lem); --cbg: var(--lem-bg); }
+.thm-example     { --c: var(--ex);   --cbg: var(--ex-bg); }
+.thm-remark, .thm-exercise { --c: var(--rem); --cbg: var(--rem-bg); }
+
+.thm-head {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.95rem;
+  color: var(--c);
+}
+.thm-name { color: var(--c); font-weight: 700; }
+.thm-title { font-weight: 600; }
+.thm > p:first-of-type { margin-top: 0.4rem; }
+.thm-theorem p, .thm-proposition p, .thm-lemma p, .thm-corollary p { font-style: italic; }
+
+/* ---------- proofs ---------- */
+.proof {
+  position: relative;
+  margin: 0.6rem 0 1.6rem;
+  padding: 0.2rem 0 0.4rem 1.2rem;
+  border-left: 2px dashed var(--rule);
+}
+.proof-label {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--muted);
+}
+.proof > .proof-label + p { display: inline; }
+.qed { display: block; text-align: right; color: var(--muted); font-size: 1.1rem; }
+
+/* ---------- lists ---------- */
+ol, ul { padding-left: 1.6rem; }
+li { margin: 0.35rem 0; }
+ol.labeled { list-style: none; padding-left: 0.4rem; }
+ol.labeled > li { display: flex; gap: 0.6rem; }
+ol.labeled > li > .item-label { flex: 0 0 auto; min-width: 2rem; font-weight: 600; color: var(--muted); }
+ol.labeled > li > div { flex: 1; min-width: 0; }
+
+/* ---------- math ---------- */
+mjx-container[display="true"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2rem 0;
+}
+
+/* ---------- figures ---------- */
+figure {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  text-align: center;
+}
+figure svg { max-width: 100%; height: auto; }
+figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+  text-align: left;
+}
+figcaption strong { color: var(--ink); }
+
+/* ---------- prev / next ---------- */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---------- index page ---------- */
+.chapter-list { list-style: none; padding: 0; counter-reset: none; }
+.chapter-list > li {
+  margin: 1rem 0;
+  padding: 1.1rem 1.3rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.chapter-link { font-size: 1.2rem; font-weight: 700; }
+.lectures { margin-top: 0.3rem; font-size: 0.9rem; color: var(--muted); }
+.lectures a { color: var(--muted); }
+.lectures a:hover { color: var(--accent); }
+
+/* ---------- small screens ---------- */
+@media (max-width: 1000px) {
+  .layout { flex-direction: column; align-items: center; gap: 1.2rem; padding-top: 1.2rem; }
+  .toc { position: static; width: 100%; max-width: var(--content-w); max-height: none; flex: none; }
+  body { font-size: 17px; }
+  h1 .chapter-name { font-size: 1.9rem; }
+}

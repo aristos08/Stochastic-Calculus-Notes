@@ -18,10 +18,11 @@
 
   --content-w: 820px;
 
-  /* "CMUSerifWeb" is our own @font-face (Computer Modern), declared in each
-     page's <head>. Falls back to Georgia if the web font is unavailable. */
-  --serif: "CMUSerifWeb", Georgia, "Times New Roman", serif;
-  --ui: "CMUSerifWeb", Georgia, serif;
+  /* Computer Modern web font, linked in each page's <head> (vsalvino CDN).
+     Falls back to Georgia if the web font is unavailable. */
+  --serif: "Computer Modern Serif", "CMU Serif", "Latin Modern Roman",
+           Georgia, "Times New Roman", serif;
+  --ui: "Computer Modern Serif", "CMU Serif", Georgia, serif;
 }
 
 * { box-sizing: border-box; }

@@ -474,46 +474,42 @@ def mathjax_config():
 
 # ---------------------------------------------------------------- pages
 
-# Computer Modern prose, to match the MathJax equations. Instead of relying on
-# a third-party CSS whose @font-face family name we can't verify from here, we
-# declare @font-face ourselves and point at the woff2 files in the
-# @fontsource/cmu-serif package on jsDelivr (a stable, documented file layout).
-# Because WE name the family "CMUSerifWeb", the CSS stack and the font are
-# guaranteed to match; if the files fail to load, it falls back to Georgia.
-# The #font-probe span reports on the page whether the web font actually loaded.
-_FS = "https://cdn.jsdelivr.net/npm/@fontsource/cmu-serif@5.2.6/files"
+# Computer Modern prose, to match the MathJax equations.
+#
+# We link the vsalvino/computer-modern project's OWN stylesheet from jsDelivr
+# (a project built specifically to serve CM web fonts over a public CDN). By
+# linking its CSS -- rather than hand-writing woff2 filenames, which is what
+# failed before -- the browser resolves the correct font-file paths itself.
+# That stylesheet declares the family "Computer Modern Serif", which the CSS
+# font stack references. Falls back to Georgia if the CDN is unreachable.
+#
+# The #font-probe span reports on the page whether the web font actually
+# loaded, and the probe tries BOTH common family names so a rename can't give a
+# false negative.
 FONT_LINK = """<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<style>
-  @font-face {
-    font-family: "CMUSerifWeb"; font-style: normal; font-weight: 400;
-    font-display: swap;
-    src: url("%(fs)s/cmu-serif-latin-400-normal.woff2") format("woff2");
-  }
-  @font-face {
-    font-family: "CMUSerifWeb"; font-style: italic; font-weight: 400;
-    font-display: swap;
-    src: url("%(fs)s/cmu-serif-latin-400-italic.woff2") format("woff2");
-  }
-  @font-face {
-    font-family: "CMUSerifWeb"; font-style: normal; font-weight: 700;
-    font-display: swap;
-    src: url("%(fs)s/cmu-serif-latin-700-normal.woff2") format("woff2");
-  }
-</style>
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/vsalvino/computer-modern@main/fonts/Serif/cmun-serif.css">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fontsource/cmu-serif@5.2.6/index.css">
 <script>
-  // Report on the page whether the Computer Modern web font loaded.
+  // Report on the page whether a Computer Modern web font loaded.
   document.addEventListener("DOMContentLoaded", function () {
     var el = document.getElementById("font-probe");
     if (!el || !document.fonts || !document.fonts.check) return;
+    var families = ['"Computer Modern Serif"', '"CMU Serif"', '"Latin Modern Roman"'];
     function report() {
-      var ok = document.fonts.check('16px "CMUSerifWeb"');
-      el.textContent = ok ? "web font: Computer Modern loaded"
-                          : "web font: FALLBACK (Georgia) \u2014 CMU Serif did not load";
-      el.className = ok ? "ok" : "bad";
+      var hit = null;
+      for (var i = 0; i < families.length; i++) {
+        try { if (document.fonts.check('16px ' + families[i])) { hit = families[i]; break; } }
+        catch (e) {}
+      }
+      el.textContent = hit ? ("web font loaded: " + hit.replace(/"/g, ""))
+                           : "web font: FALLBACK (Georgia) \u2014 Computer Modern did not load";
+      el.className = hit ? "ok" : "bad";
     }
     if (document.fonts.ready) document.fonts.ready.then(report); else report();
   });
-</script>""" % {"fs": _FS}
+</script>"""
 
 
 def page(title, body, nav_html="", css_version=""):

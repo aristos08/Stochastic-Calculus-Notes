@@ -1,53 +1,214 @@
 \chapter{Construction of It\^o's Integral with Respect to Continuous \texorpdfstring{$L^2$}{L2}-Bounded Martingales}
 
-Let \(S\le T\) be stopping times, and let \(Z\) be bounded and \(\mathcal F_S\)-measurable. Consider the elementary predictable process
+Let \(S\leq T\) be stopping times and let \(Z\) be bounded and
+\(\F_S\)-measurable. Consider the elementary predictable process
 \[
-H_s=Z\mathbf 1_{(S,T]}(s).
+    H_s=Z\mathbf 1_{(S,T]}(s).
 \]
 For a continuous, \(L^2\)-bounded martingale \(M\), define
 \[
-\int_0^t H_s\,dM_s
-=
-Z\bigl(M_{t\wedge T}-M_{t\wedge S}\bigr).
+    \int_0^tH_s\,dM_s
+    :=Z\bigl(M_{t\wedge T}-M_{t\wedge S}\bigr).
 \]
-This stochastic integral is also denoted by
-\[
-(H\cdot M)_t.
-\]
+We also write this stochastic integral as \((H\cdot M)_t\).
 
 \begin{proposition}
 The process
 \[
-(H\cdot M)_t
-=
-Z\bigl(M_{t\wedge T}-M_{t\wedge S}\bigr)
+    (H\cdot M)_t=Z\bigl(M_{t\wedge T}-M_{t\wedge S}\bigr)
 \]
 is an adapted, \(L^2\)-bounded martingale.
 \end{proposition}
 
 \begin{proof}
-Adaptedness follows from the measurability of \(Z\) with respect to \(\mathcal F_S\) and the fact that \(S\le t\wedge S\le t\), \(T\le t\wedge T\le t\).
+The process is adapted: before \(S\) it is zero, while for \(t\geq S\),
+\(Z\) is \(\F_S\subseteq\F_t\)-measurable.
 
-For \(L^2\)-boundedness,
+For \(L^2\)-boundedness, conditional Jensen and optional sampling give
 \[
-\|(H\cdot M)_t\|_2
-\le
-\|Z\|_\infty
-\left(
-\|M_{t\wedge T}\|_2+\|M_{t\wedge S}\|_2
-\right).
+    \|M_{t\wedge T}\|_2\leq\|M_t\|_2,
+    \qquad
+    \|M_{t\wedge S}\|_2\leq\|M_t\|_2.
 \]
-By optional sampling,
+Thus
 \[
-M_{t\wedge T}
-=
-\mathbb E[M_t\mid\mathcal F_{t\wedge T}],
+    \|(H\cdot M)_t\|_2
+    \leq2\|Z\|_\infty\|M_t\|_2,
 \]
-and hence conditional expectation is an \(L^2\)-contraction:
-\[
-\|M_{t\wedge T}\|_2\le\|M_t\|_2.
-\]
-The same argument applies to \(M_{t\wedge S}\). Since \(M\) is \(L^2\)-bounded, so is \(H\cdot M\).
+so \(H\cdot M\) is \(L^2\)-bounded.
 
-Finally, the martingale property follows from optional sampling and the \(\mathcal F_S\)-measurability of \(Z\).
+It remains to prove the martingale property. Let \(R\) be an arbitrary
+bounded stopping time. For \(A\in\F_S\), define
+\[
+    S_A:=S\mathbf 1_A+\infty\mathbf 1_{A^c},
+    \qquad
+    T_A:=T\mathbf 1_A+\infty\mathbf 1_{A^c}.
+\]
+Both are stopping times, and optional sampling applied to the bounded
+stopping times \(S_A\wedge R\leq T_A\wedge R\) gives
+\[
+    \E[M_{T_A\wedge R}]=\E[M_{S_A\wedge R}].
+\]
+Outside \(A\), both stopped variables equal \(M_R\); hence
+\[
+    \E\bigl[(M_{T\wedge R}-M_{S\wedge R});A\bigr]=0.
+\]
+Since this holds for every \(A\in\F_S\),
+\[
+    \E[M_{T\wedge R}-M_{S\wedge R}\mid\F_S]=0.
+\]
+Multiplying by the bounded \(\F_S\)-measurable variable \(Z\), then taking
+expectations, gives \(\E[(H\cdot M)_R]=0=(H\cdot M)_0\). The converse
+optional-sampling criterion now implies that \(H\cdot M\) is a martingale.
 \end{proof}
+\section{Lecture 17}
+
+For more general $H$, we can take linear combinations of the earlier form:
+\[
+H = \sum_{i=1}^n Z_{i-1} \mathbf{1}_{(T_{i-1}, T_i]},
+\]
+where $0 \le T_0 < \cdots < T_n$ are stopping times. We will then define 
+\[
+(H \cdot M)_t = \sum Z_{i-1}(M_{T_i \wedge t} - M_{T_{i-1} \wedge t}).
+\]
+
+\begin{center}
+%html-figure: ito-construction-roadmap.html
+\begin{tikzpicture}[
+    >=Stealth,
+    box/.style={
+        draw,
+        rounded corners=8pt,
+        minimum width=5.4cm,
+        minimum height=2.6cm,
+        align=center,
+        inner sep=8pt
+    },
+    roadmaptext/.style={
+        font=\small\itshape,
+        align=center
+    }
+]
+
+% main objects
+\node[box] (integrands) at (0,0) {
+    \textbf{Elementary integrands}\\[2mm]
+    $\displaystyle
+    H=\sum_{i=1}^n Z_{i-1}\mathbf{1}_{(T_{i-1},T_i]}
+    $
+};
+
+\node[box] (outputs) at (8.2,0) {
+    \textbf{Resulting stochastic processes}\\[2mm]
+    $\displaystyle
+    H\cdot M
+    =
+    \left\{
+        \int_0^t H_s\,dM_s
+    \right\}_{t\geq 0}
+    $
+};
+
+
+% steps 1 and 2
+\node[
+    roadmaptext,
+    text width=5.4cm
+] at (0,-3.15) {
+    \textbf{1.} Give the integrands a norm\\
+    and a measurable structure.
+};
+
+\node[
+    roadmaptext,
+    text width=5.4cm
+] at (8.2,-3.15) {
+    \textbf{2.} Identify $L^2$-bounded martingales\\
+    with their terminal values in $L^2(\F_\infty)$.
+};
+
+% step 3
+\node[
+    roadmaptext,
+    text width=11.5cm
+] (density) at (4.1,-5.15) {
+    \textbf{3.} Show that the elementary integrands are dense\\
+    in the completed integrand space $L^2(M)$.
+};
+
+% step 4
+\draw[->, thick] (4.1,-5.95) -- (4.1,-6.75);
+
+\node[
+    roadmaptext,
+    text width=11.5cm
+] at (4.1,-7.25) {
+    \textbf{4.} Prove the It\^o isometry, then extend the integral\\
+    uniquely to every predictable process in $L^2(M)$.
+};
+
+\end{tikzpicture}
+\end{center}
+
+
+
+For the purpose of (2), 
+we will use the fact that an $L^2$-bounded martingale can be identified with elements in $L^2(\F_\infty)$. 
+Recall that by the martingale convergence theorem, if $\{M_t\}$ is $L^2$-bounded, then $M_t \overset{L^2}{\to} M_\infty \in L^2(\F_\infty)$. Then, $M_t = \E(M_\infty \mid \F_t)$. 
+
+Thus, we have a one-to-one relation 
+\[
+\{M_t\}_{t \ge 0} \longleftrightarrow M_\infty \in L^2(\F_\infty). 
+\]
+
+For (1), note that
+\begin{align*}
+\E((H \cdot M)_\infty^2) &= \E\left(\left(\sum Z_{i-1}(M_{T_i} - M_{T_{i-1}})\right)^2\right) \\ 
+&= \E \left( \sum Z_{i-1}^2 (M_{T_i}-M_{T_{i-1}})^2\right)
+\end{align*}
+Since $M_t^2 - [M]_t$ is a uniformly integrable martingale, for stopping times $S \le T$, we get 
+\begin{align*}
+\E((M_T-M_S)^2 \mid \F_S) &= \E[M_T^2-M_S^2 \mid \F_S] \\ 
+&= \E([M]_T - [M]_S \mid \F_S)
+\end{align*}
+Thus, 
+\begin{align*}
+\E((H \cdot M)_\infty^2) &= \E\left(\sum Z_{i-1}^2([M]_{T_i} - [M]_{T_{i-1}})\right)  \\ 
+&= \E \left(\int_0^\infty H_s^2 d[M]_s \right)
+\end{align*}
+We will then define 
+\[
+\|H\|_M  = \E \left(\int_0^\infty H_s^2 d[M]_s \right)^{1/2}
+\]
+
+For (3), let $b\mcal{E}$ be the set of all processes $H$ with the form 
+\[
+H = \sum_{i=1}^n Z_{i-1} \mathbf{1}_{(T_{i-1}, T_{i}]}, \quad Z_i \in \F_{T_i}
+\]
+the b stands for bounded, the E for elementary. 
+
+\begin{definition}
+The $\sigma$-algebra generated by $b\mcal{E}$ is 
+\[
+\mcal{P} = \sigma(b \mcal{E}),
+\]
+which is called the predictable/previsible $\sigma$-algebra.
+\end{definition}
+
+A process is called predictable/previsible if it is a $\mcal{P}$-measurable mapping from $[0, \infty) \times \Omega \to (\R, \mcal{B}(\R))$.
+
+What processes are predictable? By monotone class theorem, all the Càglàd (continuous from the left with right limits existing) functions (in our case, Stochastic processes) are.
+
+Define 
+\[
+L^2(M) = \left\{\text{predictable processes } H \text{ such that } \|H\|_M < \infty \right\}.
+\]
+We have defined $H \cdot M$ for $H \in b\mcal{E}$. Our goal is to show that $\overline{b \mcal{E}} = L^2(M)$, where the closure is taken under the earlier norm. 
+The proof is omitted. (The idea is to use a version of the monotone class theorem.)
+
+For (4), we have seen that 
+\[
+\E((H \cdot M)_\infty^2) =
+ \E \left(\int_0^\infty H_s^2 d[M]_s \right)
+\]
+One side is $\|(H \cdot M)_\infty\|_2^2$, and the other is $\|H\|_M^2$. This means that the mapping $I \colon b\mcal{E} \cap L^2(M) \to L^2(\F_\infty)$ defined by $I(H) = (H \cdot M)_\infty$ is an isometry. Since $b\mcal{E}$ is dense in $L^2(M)$, this isometry extends uniquely to the closure $\overline{b \mcal{E}} = L^2(M)$.

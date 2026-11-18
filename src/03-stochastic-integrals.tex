@@ -769,30 +769,32 @@ This is a local martingale. For example, one may localize it using
 \[
 T_n=\inf\{t\ge0:X_t\ge n\}.
 \]
-\section{Lecture 16: Class \texorpdfstring{$DL$}{DL}, Quadratic Covariation, and Elementary It\^o Integrals}
+\section*{Lecture 16: Class \texorpdfstring{$DL$}{DL}, Quadratic Covariation, and Elementary It\^o Integrals}
 
-\subsection{When is a local martingale a martingale?}
+\subsection*{When is a local martingale a martingale?}
 
 We have already encountered many local martingales of the form
 \[
-\int_0^t H_s\,dB_s.
+    \int_0^t H_s\,dB_s.
 \]
-If the integrand satisfies an appropriate \(L^2\) condition, then the stochastic integral is in fact a true martingale. We now give a more general criterion.
+Under a suitable integrability condition, such a process is a true martingale.
+The following criterion gives a useful general answer.
 
 \begin{definition}[Class \(DL\)]
-An adapted process \(X=\{X_t\}_{t\ge0}\) is said to be in \emph{class \(DL\)} if, for every \(a>0\), the family
+An adapted process \(X=\{X_t\}_{t\geq0}\) is in \emph{class \(DL\)} if, for every \(a>0\), the family
 \[
-\{X_T: T\text{ is a stopping time and }0\le T\le a\}
+    \{X_T:T\text{ is a stopping time and }0\leq T\leq a\}
 \]
 is uniformly integrable.
 \end{definition}
 
-The notation \(DL\) is commonly interpreted as either \emph{Doob localized} or \emph{dominated localized}.
+The notation \(DL\) is commonly read as either \emph{Doob localized} or
+\emph{dominated localized}.
 
 \begin{lemma}
-Let \(Y\in L^1\), and let \(\{\mathcal G_\alpha\}_{\alpha\in I}\) be any collection of sub-\(\sigma\)-algebras of \(\mathcal F\). Then the family
+Let \(Y\in L^1\), and let \(\{\mathcal G_\alpha\}_{\alpha\in I}\) be any collection of sub-\(\sigma\)-algebras of \(\mathcal F\). Then
 \[
-\left\{\mathbb E[Y\mid\mathcal G_\alpha]:\alpha\in I\right\}
+    \left\{\E[Y\mid\mathcal G_\alpha]:\alpha\in I\right\}
 \]
 is uniformly integrable.
 \end{lemma}
@@ -802,125 +804,96 @@ A continuous local martingale \(X\) is a martingale if and only if it is in clas
 \end{theorem}
 
 \begin{proof}
-Suppose first that \(X\) is a martingale. Let \(T\) be a stopping time satisfying \(0\le T\le a\). By optional sampling,
+Suppose first that \(X\) is a martingale, and let \(T\) be a stopping time
+with \(0\leq T\leq a\). Optional sampling gives
 \[
-X_T=\mathbb E[X_a\mid\mathcal F_T].
+    X_T=\E[X_a\mid\F_T].
 \]
-The lemma implies that
-\[
-\{X_T:0\le T\le a\}
-\]
-is uniformly integrable. Since this holds for every \(a>0\), \(X\) is in class \(DL\).
+The lemma therefore shows that \(\{X_T:0\leq T\leq a\}\) is uniformly
+integrable. Since \(a>0\) was arbitrary, \(X\) is in class \(DL\).
 
-Conversely, suppose that \(X\) is a local martingale in class \(DL\), and let \(\{T_n\}\) be a localizing sequence. Fix \(0\le s\le t\), and let \(A\in\mathcal F_s\). Since \(X^{T_n}\) is a martingale,
+Conversely, let \(X\) be a local martingale in class \(DL\), and let
+\(\{T_n\}\) be a localizing sequence. Fix \(0\leq s\leq t\) and
+\(A\in\F_s\). Since \(X^{T_n}\) is a martingale,
 \[
-\mathbb E\left[X_{t\wedge T_n};A\right]
-=
-\mathbb E\left[X_{s\wedge T_n};A\right].
+    \E[X_{t\wedge T_n};A]=\E[X_{s\wedge T_n};A].
 \]
 Because \(T_n\uparrow\infty\) almost surely and \(X\) has continuous paths,
 \[
-X_{t\wedge T_n}\to X_t
-\qquad\text{and}\qquad
-X_{s\wedge T_n}\to X_s
+    X_{t\wedge T_n}\longrightarrow X_t,
+    \qquad
+    X_{s\wedge T_n}\longrightarrow X_s
 \]
-almost surely. Moreover, both sequences are uniformly integrable, since \(X\) is in class \(DL\). Therefore the convergences also hold in \(L^1\), and we obtain
+almost surely. Both sequences are uniformly integrable by the \(DL\)
+assumption, so the convergences also hold in \(L^1\). Hence
 \[
-\mathbb E[X_t;A]=\mathbb E[X_s;A].
+    \E[X_t;A]=\E[X_s;A].
 \]
-Since this holds for every \(A\in\mathcal F_s\),
-\[
-\mathbb E[X_t\mid\mathcal F_s]=X_s.
-\]
-Thus \(X\) is a martingale.
+As this holds for every \(A\in\F_s\), we have
+\(\E[X_t\mid\F_s]=X_s\) almost surely. Thus \(X\) is a martingale.
 \end{proof}
 
-\subsection{The process \texorpdfstring{$M^2-[M]$}{M²−[M]} for an \texorpdfstring{$L^2$}{L2}-bounded martingale}
+\subsection*{The process \texorpdfstring{$M^2-[M]$}{M\textsuperscript{2} - [M]} for an \texorpdfstring{$L^2$}{L2}-bounded martingale}
 
-Let \(M\) be a continuous, \(L^2\)-bounded martingale with \(M_0=0\). We prove that
-\[
-M^2-[M]
-\]
-is a uniformly integrable martingale.
+Let \(M\) be a continuous, \(L^2\)-bounded martingale with \(M_0=0\).
+We show that \(M^2-[M]\) is a uniformly integrable martingale.
 
-Since \(M\) is \(L^2\)-bounded, it converges in \(L^2\) and almost surely to some random variable \(M_\infty\in L^2\). Doob's \(L^2\) maximal inequality gives
+Since \(M\) is \(L^2\)-bounded, there exists \(M_\infty\in L^2\) such that
+\(M_t\to M_\infty\) almost surely and in \(L^2\). Doob's \(L^2\) maximal
+inequality yields
 \[
-\mathbb E\left[(M_\infty^*)^2\right]
-\le
-4\mathbb E[M_\infty^2]
-<\infty,
-\qquad
-M_\infty^*:=\sup_{t\ge0}|M_t|.
+    \E\bigl[(M_\infty^*)^2\bigr]
+    \leq 4\E[M_\infty^2]<\infty,
+    \qquad
+    M_\infty^*:=\sup_{t\geq0}|M_t|.
 \]
 
-Let
+For \(n\in\mathbb N\), define
 \[
-T_n=\inf\{t\ge0:|M_t|\ge n\}.
+    T_n:=\inf\{t\geq0:|M_t|\geq n\}.
 \]
-For each \(n\), the stopped martingale \(M^{T_n}\) is bounded. Hence,
+The stopped martingale \(M^{T_n}\) is bounded. Therefore, for each \(t\geq0\),
 \[
-\mathbb E\left([M]_{t\wedge T_n}\right)
-=
-\mathbb E\left(M_{t\wedge T_n}^2\right)
-\le
-\mathbb E\left[(M_\infty^*)^2\right].
+    \E\bigl[[M]_{t\wedge T_n}\bigr]
+    =\E\bigl[M_{t\wedge T_n}^2\bigr]
+    \leq\E\bigl[(M_\infty^*)^2\bigr].
 \]
-As \(n\to\infty\), we have \(t\wedge T_n\uparrow t\) almost surely, and therefore
+Letting \(n\to\infty\), monotone convergence gives
 \[
-[M]_{t\wedge T_n}\uparrow [M]_t.
+    \E[[M]_t]\leq\E\bigl[(M_\infty^*)^2\bigr].
 \]
-By monotone convergence,
+One more application of monotone convergence, now as \(t\to\infty\), gives
 \[
-\mathbb E([M]_t)
-\le
-\mathbb E\left[(M_\infty^*)^2\right].
+    \E[[M]_\infty]
+    \leq\E\bigl[(M_\infty^*)^2\bigr]<\infty.
 \]
-Letting \(t\to\infty\), again by monotone convergence,
-\[
-\mathbb E([M]_\infty)
-=
-\lim_{t\to\infty}\mathbb E([M]_t)
-\le
-\mathbb E\left[(M_\infty^*)^2\right]
-<\infty.
-\]
-
 Consequently,
 \[
-\sup_{t\ge0}|M_t^2-[M]_t|
-\le
-(M_\infty^*)^2+[M]_\infty,
+    \sup_{t\geq0}|M_t^2-[M]_t|
+    \leq (M_\infty^*)^2+[M]_\infty
 \]
-and the right-hand side is integrable. Thus \(M^2-[M]\) is in class \(DL\). Since it is already a local martingale, the preceding theorem implies that
-\[
-M^2-[M]
-\]
-is a uniformly integrable martingale.
+is integrable. Thus \(M^2-[M]\) is in class \(DL\). Since it is already a
+continuous local martingale, the preceding theorem implies that it is a
+martingale; its class \(DL\) property also makes this martingale uniformly
+integrable.
 
-\subsection{Quadratic covariation}
+\subsection*{Quadratic covariation}
 
 \begin{definition}[Quadratic covariation]
 Let \(M\) and \(N\) be continuous, \(L^2\)-bounded martingales with
+\(M_0=N_0=0\). Their \emph{quadratic covariation} is defined by polarization:
 \[
-M_0=N_0=0.
-\]
-Their \emph{quadratic covariation} is defined by polarization:
-\[
-[M,N]
-=
-\frac14\left([M+N]-[M-N]\right).
+    [M,N]:=\frac14\bigl([M+N]-[M-N]\bigr).
 \]
 \end{definition}
 
-In particular,
-\[
-[M,M]=[M].
-\]
+In particular, \([M,M]=[M]\).
 
 \begin{theorem}
-The process \([M,N]\) is the unique continuous finite-variation process vanishing at zero such that
+The process \([M,N]\) is the unique continuous finite-variation process
+vanishing at zero such that
 \[
-MN-[M,N]
+    MN-[M,N]
 \]
 is a uniformly integrable martingale.
 \end{theorem}

@@ -269,6 +269,12 @@ def convert_inline(s):
             elif name == "texttt":
                 content, j = read_group(s, skip_ws(s, j))
                 out.append("<code>%s</code>" % convert_inline(content))
+            elif name == "textsuperscript":
+                content, j = read_group(s, skip_ws(s, j))
+                out.append("<sup>%s</sup>" % convert_inline(content))
+            elif name == "textsubscript":
+                content, j = read_group(s, skip_ws(s, j))
+                out.append("<sub>%s</sub>" % convert_inline(content))
             elif name == "texorpdfstring":
                 # \texorpdfstring{web/TeX version}{PDF version}: the page can show math.
                 first, j = read_group(s, skip_ws(s, j))
@@ -408,6 +414,11 @@ class Renderer:
         if env in ("figure", "figure*"):
             return self.figure(body)
         if env in ("center",):
+            # A centered TikZ picture can carry a "%html-figure: name.html|svg" comment;
+            # the file in src/figures/ replaces it (no number or caption).
+            m = re.search(r"\\htmlfigure\{([^}]+)\}", body)
+            if m:
+                return self.diagram(m.group(1))
             return '<div class="center">%s</div>' % self.render(body)
         if env == "tikzpicture":
             warn("tikzpicture outside a figure is not rendered")
@@ -462,6 +473,14 @@ class Renderer:
             else:
                 lis.append("<li>%s</li>" % inner)
         return "<%s%s>\n%s\n</%s>" % (tag, cls, "\n".join(lis), tag)
+
+    def diagram(self, filename):
+        """An unnumbered, uncaptioned figure read from src/figures/<filename>."""
+        path = SRC / "figures" / filename
+        if not path.exists():
+            warn("Missing figure file %s" % path)
+            return ""
+        return '<figure class="diagram">\n%s\n</figure>' % path.read_text(encoding="utf-8")
 
     def figure(self, body):
         _, start = read_optional(body, 0)
